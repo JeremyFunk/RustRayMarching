@@ -1,4 +1,5 @@
 use crate::configuration::Config;
+use crate::filter;
 use image::{ImageBuffer, RgbImage};
 
 pub trait Film{
@@ -6,16 +7,19 @@ pub trait Film{
     fn build_image(&self) -> image::ImageBuffer<image::Rgb<u8>, std::vec::Vec<u8>>;
 }
 
-pub struct BasicFilm {
-    data: Vec<f64>
+pub struct BasicFilm<F: filter::Filter> {
+    data: Vec<f64>,
+    filter: F
 }
 
-impl Film for BasicFilm{
+impl<F: filter::Filter> Film for BasicFilm<F>{
     fn write_pixel(&mut self, x: u32, y: u32, col: [f64; 3]){
+        let new_col = self.filter.filter_color(x, y, col);
+
         let index = ((x * Config.width + y) * 3) as usize;
-        self.data[index] = col[0];
-        self.data[index + 1] = col[1];
-        self.data[index + 2] = col[2];
+        self.data[index] = new_col[0];
+        self.data[index + 1] = new_col[1];
+        self.data[index + 2] = new_col[2];
     }
 
     fn build_image(&self) -> image::ImageBuffer<image::Rgb<u8>, std::vec::Vec<u8>>{
@@ -30,8 +34,8 @@ impl Film for BasicFilm{
         return img;
     }
 }
-impl BasicFilm{
-    pub fn new() -> BasicFilm{
+impl<F: filter::Filter> BasicFilm<F>{
+    pub fn new(filter: F) -> BasicFilm<F>{
         let index = Config.width * Config.height * 3;
         let mut data = Vec::<f64>::with_capacity(index as usize);
 
@@ -43,7 +47,8 @@ impl BasicFilm{
             }
         }
         BasicFilm{
-            data
+            data,
+            filter
         }
     }
 }

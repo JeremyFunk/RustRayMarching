@@ -6,9 +6,10 @@ type Ray = ([f64;3],[f64;3]);
 
 mod configuration;
 mod helpers;
-use configuration::Config;
+mod modifier;
 mod primitive;
 mod cameras;
+mod filter;
 mod film;
 mod solver;
 mod shader;
@@ -22,13 +23,17 @@ fn main() {
         [0.0, 0.0, 0.0]
     );
 
+    let mut pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+    pos_modifier.push(Box::new(modifier::Distort::new(1.1, [0.0,0.0,0.0], 2.2)));
+
     let mut primitives = Vec::<Box<dyn primitive::Primitive>>::new();
     primitives.push(
         // Box::new(primitive::Box::new([1.0,1.0,1.0], [0.0, 0.0, -10.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0]))
-        Box::new(primitive::Sphere::new(1.0, [0.0, 0.0, -10.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0]))
+        Box::new(primitive::Sphere::new(4.0, [0.0, 0.0, -10.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], pos_modifier))
     );
 
-    let film = film::BasicFilm::new();
+    let filter = filter::ColorShift::new([1.0, 0.3, 0.3], filter::ColorShiftMode::Mul);
+    let film = film::BasicFilm::new(filter);
     let solver = solver::GeneralSolver::new(primitives);
     let shader = shader::NormalShader::new();
     // let mut renderer= renderers::CameraRayRenderer::new(camera, film);
