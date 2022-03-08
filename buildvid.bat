@@ -1,0 +1,1 @@
+ffmpeg -r 24 -i %01d.png -vb 20M -vcodec mpeg4 -y movie.mp4
