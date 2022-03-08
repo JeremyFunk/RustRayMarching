@@ -70,14 +70,14 @@ use renderers::Renderer;
 
 fn main() {
     let camera = cameras::PinholeCamera::new(
-        [0.0, 0.0, 2.0],
+        [0.0, 0.0, 2.5],
         [0.0, 0.0, 0.0]
     );
     let mut pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
     // pos_modifier.push(Box::new(modifier::Distort::new(1.1, [0.0,0.0,0.0], 2.2)));
     let mut primitives = Vec::<Box<dyn primitive::Primitive>>::new();
-    let mut mandel = primitive::Mandelbulb::new(5.0, [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], pos_modifier);
-    mandel.power_ev(Box::new(evaluator::InterpolatorEvaluator::new(0.0, 5.0, 1.0, true)));
+    let mut mandel = primitive::Mandelbulb::new(5.0, [0.0, 0.0, 0.0], [35.0, 8.0, 14.0], [1.0, 1.0, 1.0], pos_modifier);
+    mandel.power_ev(Box::new(evaluator::InterpolatorEvaluator::new(0.0, 9.0, 10.0, true)));
     primitives.push(
         // Box::new(primitive::Box::new([1.0,1.0,1.0], [0.0, 0.0, -10.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0]))
         // Box::new(primitive::Sphere::new(4.0, [0.0, 0.0, -10.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0], pos_modifier))
@@ -93,7 +93,7 @@ fn main() {
     let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader);
 
 
-    for i in 0..24{
+    for i in 0..240{
         let t = i as f64 / 24.0;
         renderer.prepare_render();
         renderer.evaluate(t);

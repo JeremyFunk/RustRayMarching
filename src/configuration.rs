@@ -20,13 +20,13 @@ impl Configuration{
     pub fn new() -> Configuration{
 
         Configuration{
-            width: 1024, 
-            height: 1024, 
-            width_f: 1024.0, 
-            height_f: 1024.0, 
+            width: 512, 
+            height: 512, 
+            width_f: 512.0, 
+            height_f: 512.0, 
             fov: 90.0,
-            step_number: 256,
-            min_dist: 0.0001,
+            step_number: 64,
+            min_dist: 0.001,
             max_dist: 300.0,
             small_step: 0.001
         }
