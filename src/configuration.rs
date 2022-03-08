@@ -25,7 +25,7 @@ impl Configuration{
             width_f: 1024.0, 
             height_f: 1024.0, 
             fov: 90.0,
-            step_number: 64,
+            step_number: 256,
             min_dist: 0.0001,
             max_dist: 300.0,
             small_step: 0.001

@@ -5,6 +5,8 @@ use image::{ImageBuffer, RgbImage};
 pub trait Film{
     fn write_pixel(&mut self, x: u32, y: u32, col: [f64; 3]);
     fn build_image(&self) -> image::ImageBuffer<image::Rgb<u8>, std::vec::Vec<u8>>;
+    fn evaluate(&mut self, t: f64);
+    fn prepare_render(&mut self);
 }
 
 pub struct BasicFilm<F: filter::Filter> {
@@ -32,6 +34,20 @@ impl<F: filter::Filter> Film for BasicFilm<F>{
             *pixel = image::Rgb([r, g, b]);
         }
         return img;
+    }
+    fn evaluate(&mut self, t: f64){
+        self.filter.evaluate(t)
+    }
+    fn prepare_render(&mut self){
+        let d = &mut self.data;
+        for x in 0..Config.width{
+            for y in 0..Config.height{
+                let index = (x*Config.width+y) * 3;
+                d[index as usize] = 0.0;
+                d[(index + 1) as usize] = 0.0;
+                d[(index + 2) as usize] = 0.0;
+            }
+        }
     }
 }
 impl<F: filter::Filter> BasicFilm<F>{

@@ -2,6 +2,7 @@ use crate::configuration::Config;
 use crate::helpers;
 pub trait Camera{
     fn generate_ray(&self, x: f64, y: f64) -> crate::Ray;
+    fn evaluate(&mut self, t: f64);
 }
 
 pub struct PinholeCamera{
@@ -19,6 +20,9 @@ impl Camera for PinholeCamera{
         let dir = vecmath::vec3_normalized([rx, ry, -1.0]);
 
         return (helpers::mat_dir_mul(self.mat_inv, dir), [self.pos[0], self.pos[1],self.pos[2]])
+    }
+    fn evaluate(&mut self, t: f64){
+        
     }
 }
 

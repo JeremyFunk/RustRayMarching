@@ -2,6 +2,7 @@ use crate::configuration::Config;
 
 pub trait Filter{
     fn filter_color(&self, x: u32, y: u32, col: [f64; 3]) -> [f64;3];
+    fn evaluate(&mut self, t: f64);
 }
 
 pub enum ColorShiftMode{
@@ -31,6 +32,9 @@ impl Filter for ColorShift{
             return [col[0] / self.color[0], col[1] / self.color[1], col[2] / self.color[2]]
         }
         return col;
+    }
+    fn evaluate(&mut self, t: f64){
+        
     }
 }
 impl ColorShift{

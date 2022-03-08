@@ -19,6 +19,9 @@ pub fn vec_max(a: [f64;3], b: [f64;3]) -> [f64;3]{
     return [max_f64(a[0], b[0]), max_f64(a[1], b[1]), max_f64(a[2], b[2])]   
 }
 
+pub fn vec_clamp(v: [f64;3], min: f64, max: f64) -> [f64;3]{
+    return [v[0].clamp(min,max), v[1].clamp(min,max), v[2].clamp(min,max)]
+}
 
 pub fn mat_vec_mul(matrix: [[f64;4];4], d: [f64;3]) -> [f64;3]{
     let x = d[0] * matrix[0][0] + d[1] * matrix[1][0] + d[2] * matrix[2][0] + matrix[3][0];

@@ -6,8 +6,9 @@ use crate::configuration::Config;
 
 pub trait Renderer{
     fn render(&mut self);
-    fn prepare_render(&self);
+    fn prepare_render(&mut self);
     fn get_image(&self) -> image::ImageBuffer<image::Rgb<u8>, std::vec::Vec<u8>>;
+    fn evaluate(&mut self, t: f64);
 }
 
 pub struct CameraRayRenderer<C: cameras::Camera, F: film::Film> {
@@ -24,11 +25,15 @@ impl<C: cameras::Camera, F: film::Film> Renderer for CameraRayRenderer<C, F>{
             }
         }
     }
-    fn prepare_render(&self){
+    fn prepare_render(&mut self){
 
     }
     fn get_image(&self) -> image::ImageBuffer<image::Rgb<u8>, std::vec::Vec<u8>>{
         return self.film.build_image();
+    }
+    fn evaluate(&mut self, t: f64){
+        self.camera.evaluate(t);
+        self.film.evaluate(t);
     }
 }
 
@@ -68,11 +73,17 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader> Re
             }
         }
     }
-    fn prepare_render(&self){
-
+    fn prepare_render(&mut self){
+        self. film.prepare_render()
     }
     fn get_image(&self) -> image::ImageBuffer<image::Rgb<u8>, std::vec::Vec<u8>>{
         return self.film.build_image();
+    }
+    fn evaluate(&mut self, t: f64){
+        self.camera.evaluate(t);
+        self.film.evaluate(t);
+        self.solver.evaluate(t);
+        self.shader.evaluate(t);
     }
 }
 
