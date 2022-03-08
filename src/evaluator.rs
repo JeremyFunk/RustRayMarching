@@ -16,6 +16,14 @@ impl FloatEvaluator{
     }
 }
 
+pub fn convert_to_evaluator(a: [f64;3]) -> [Box<dyn Evaluator>;3]{
+    return [
+        Box::new(FloatEvaluator::new(a[0])),
+        Box::new(FloatEvaluator::new(a[1])),
+        Box::new(FloatEvaluator::new(a[2]))
+    ]
+}
+
 
 pub struct InterpolatorEvaluator{
     min: f64,

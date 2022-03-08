@@ -10,20 +10,48 @@ macro_rules! eval {
 }
 
 #[macro_export]
-macro_rules! eval_b {
+macro_rules! eval_v {
+    ($x:expr) => {
+        evaluator::convert_to_evaluator($x)
+    };
+}
+
+#[macro_export]
+macro_rules! eval_t {
     () => {
         Box<dyn evaluator::Evaluator>
     };
 }
 
 #[macro_export]
-macro_rules! evaluator_struct {
+macro_rules! eval_t_v {
+    () => {
+        [Box<dyn evaluator::Evaluator>;3]
+    };
+}
+#[macro_export]
+macro_rules! evaluator_evs {
     (
         $name:ident {
         $($field_name:ident,)*}
     ) => {
         impl $name {
-            $(pub fn $field_name(&mut self, val: eval_b!()){self.$field_name = val;})*
+            $(pub fn $field_name(&mut self, val: eval_t!()){self.$field_name = val;})*
+        }
+    }
+}
+
+#[macro_export]
+macro_rules! evaluator_struct {
+    (
+        $name:ident {
+        $($default_field_name:ident: $default_field_type:ty,)*},
+        {$($evaluator_name:ident,)*}
+    ) => {
+        struct $name {
+            $($default_field_name: $default_field_type,)*
+            $($evaluator_name: Box::new(evaluator::FloatEvaluator::new($field_type_2)),)*
+            // $($float_name: f64,)*
         }
     }
 }

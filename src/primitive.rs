@@ -23,6 +23,9 @@ pub struct PrimitiveData{
     pos: [f64;3],
     rot: [f64;3],
     scale: [f64;3],
+    pos_ev: eval_t_v!(),
+    rot_ev: eval_t_v!(),
+    scale_ev: eval_t_v!(),
     mat_inv: [[f64;4];4],
     pos_modifier: Vec<Box<dyn modifier::PosModifier>>
 }
@@ -57,7 +60,14 @@ impl Sphere{
         Sphere{
             rad,
             primtive_data: PrimitiveData{
-                pos,rot,scale,mat_inv,pos_modifier
+                pos,
+                rot,
+                scale,
+                mat_inv,
+                pos_modifier,
+                pos_ev: eval_v!(pos), 
+                rot_ev: eval_v!(rot),
+                scale_ev: eval_v!(scale)
             }
         }
     }
@@ -73,7 +83,7 @@ impl InternalPrimitive for Sphere{
     }
 
     fn _evaluate(&mut self, t: f64){
-
+        
     }
 }
 
@@ -97,7 +107,10 @@ impl Torus{
             ring_rad,
             rad,
             primtive_data: PrimitiveData{
-                pos,rot,scale,mat_inv,pos_modifier
+                pos,rot,scale,mat_inv,pos_modifier,
+                pos_ev: eval_v!(pos), 
+                rot_ev: eval_v!(rot),
+                scale_ev: eval_v!(scale)
             }
         }
     }
@@ -136,7 +149,10 @@ impl Cube{
         Cube{
             bounds,
             primtive_data: PrimitiveData{
-                pos,rot,scale,mat_inv,pos_modifier
+                pos,rot,scale,mat_inv,pos_modifier,
+                pos_ev: eval_v!(pos), 
+                rot_ev: eval_v!(rot),
+                scale_ev: eval_v!(scale)
             }
         }
     }
@@ -165,16 +181,16 @@ impl InternalPrimitive for Cube{
 //               Mandelbulb
 // ------------------------------------------
 
-evaluator_struct!{
-    Mandelbulb {
-        power_ev,
-    }
-}
-
 pub struct Mandelbulb {
     primtive_data: PrimitiveData,
     power: f64,
-    power_ev: eval_b!()
+    power_ev: eval_t!()
+}
+
+evaluator_evs!{
+    Mandelbulb {
+        power_ev,
+    }
 }
 
 impl Mandelbulb{
@@ -187,7 +203,12 @@ impl Mandelbulb{
         //         pos,rot,scale,mat_inv,pos_modifier
         //     }
         // }
-        let data = PrimitiveData{ pos,rot,scale,mat_inv,pos_modifier };
+        let data = PrimitiveData{ 
+            pos,rot,scale,mat_inv,pos_modifier,
+            pos_ev: eval_v!(pos), 
+            rot_ev: eval_v!(rot),
+            scale_ev: eval_v!(scale)
+        };
         eval_new!(
             Mandelbulb {
                 primtive_data: data,
