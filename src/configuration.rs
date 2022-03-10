@@ -14,6 +14,7 @@ pub struct Configuration{
     pub min_dist: f64,
     pub max_dist: f64,
     pub small_step: f64,
+    pub video: bool
 }
 
 impl Configuration{
@@ -28,7 +29,8 @@ impl Configuration{
             step_number: 64,
             min_dist: 0.001,
             max_dist: 300.0,
-            small_step: 0.001
+            small_step: 0.001,
+            video: true
         }
     }
 }

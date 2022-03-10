@@ -1,3 +1,5 @@
+use std::{rc::Rc, cell::RefCell};
+
 pub fn min_f64(a: f64, b: f64) -> f64{
     if(a < b){
         return a
@@ -9,6 +11,18 @@ pub fn max_f64(a: f64, b: f64) -> f64{
         return a
     }
     b
+}
+
+pub fn take_vector(vec: [f64!();3]) -> [f64;3]{
+    return [
+        vec[0].take(),
+        vec[1].take(),
+        vec[2].take(),
+    ]
+}
+
+pub fn round(v: f64) -> f64{
+    return v - (v % 1.0);
 }
 
 pub fn vec_f_max(a: [f64;3], val: f64) -> [f64;3]{
@@ -91,4 +105,13 @@ pub fn mat_transformation(pos: [f64;3], rot: [f64;3], scale: [f64;3]) -> [[f64;4
     transformation_matrix[3][1] = pos[1];
     transformation_matrix[3][2] = pos[2];
     return transformation_matrix
+}
+
+pub fn mat_pos_rot(pos: [f64;3], rot: [f64;3]) -> [[f64;4];4]{
+    
+    let mut rotation_matrix = mat_rotation(rot);
+    rotation_matrix[3][0] = pos[0];
+    rotation_matrix[3][1] = pos[1];
+    rotation_matrix[3][2] = pos[2];
+    return rotation_matrix
 }

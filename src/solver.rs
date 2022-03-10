@@ -1,5 +1,3 @@
-use std::borrow::BorrowMut;
-
 use crate::primitive;
 use crate::configuration::Config;
 use vecmath;
