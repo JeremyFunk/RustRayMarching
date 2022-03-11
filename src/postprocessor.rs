@@ -1,7 +1,8 @@
 use std::borrow::{BorrowMut, Borrow};
 use std::{rc::Rc, cell::RefCell};
 use crate::helpers;
-use crate::configuration::Config;
+use crate::configuration;
+
 pub trait PostProcessor{
     fn process_image(&self, data: Vec<f64>) -> Vec<f64>;
     fn evaluate(&self, t:f64);
@@ -42,7 +43,7 @@ impl PostProcessor for BloomPostProcessor{
         let factor = get_ref_f64!(self.factor);
         let data_bor: &Vec<f64> = data.borrow();
         let mut cut_img = cut_image(get_ref_f64!(self.bloom_cut), data_bor);
-        helpers::gaussian_blur(cut_img.borrow_mut(), Config.width as usize, Config.height as usize, get_ref_f64!(self.size));
+        helpers::gaussian_blur(cut_img.borrow_mut(), configuration::width as usize, configuration::height as usize, get_ref_f64!(self.size));
         let mut d: Vec<f64> = Vec::new();
         for i in 0..cut_img.len(){
             d.push(
@@ -82,7 +83,7 @@ impl PostProcessor for BlurPostProcessor{
     fn process_image(&self, data: Vec<f64>) -> Vec<f64>{
         let data_bor: &Vec<f64> = data.borrow();
         let mut cut_img = convert_image(data_bor);
-        helpers::gaussian_blur(cut_img.borrow_mut(), Config.width as usize, Config.height as usize, get_ref_f64!(self.size));
+        helpers::gaussian_blur(cut_img.borrow_mut(), configuration::width as usize, configuration::height as usize, get_ref_f64!(self.size));
         let mut d: Vec<f64> = Vec::new();
         for i in 0..cut_img.len(){
             d.push(
@@ -105,5 +106,43 @@ impl PostProcessor for BlurPostProcessor{
 impl BlurPostProcessor{
     pub fn new(size: f64!()) -> BlurPostProcessor{
         BlurPostProcessor{size}
+    }
+}
+
+
+
+
+
+
+
+
+pub struct NoisePostProcessor{
+    average: f64!(),
+    randomness: f64!()
+}
+
+
+impl PostProcessor for NoisePostProcessor{
+    fn process_image(&self, data: Vec<f64>) -> Vec<f64>{
+        let mut new_data = data.clone();
+        let rng = rand::thread_rng();
+
+        let value = get_ref_f64!(self.average);
+        let randomness = get_ref_f64!(self.randomness);
+
+        for i in 0..new_data.len(){
+            let v = gaussian::gen(rng, value, randomness);
+            new_data[i] += v - (value * 0.5);
+        }
+        new_data
+    }
+    fn evaluate(&self, t:f64){
+
+    }
+}
+
+impl NoisePostProcessor{
+    pub fn new(average: f64!(), randomness: f64!()) -> NoisePostProcessor{
+        NoisePostProcessor{average, randomness}
     }
 }

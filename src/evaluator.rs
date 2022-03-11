@@ -2,6 +2,7 @@ use std::{rc::Rc, cell::RefCell};
 use std::sync::Mutex;
 use crate::transition;
 thread_local! {
+    #[allow(non_upper_case_globals)]
     static manager: Mutex<EvaluatorManager> = Mutex::new(EvaluatorManager{evaluators: Vec::new()});
 }
 
@@ -15,7 +16,7 @@ fn insert_evaluator(pointer: f64!(), evaluator: Box<dyn Evaluator>){
 
 pub fn evaluate(t: f64){
     manager.with(|v| {
-        let mut eval = v.lock().unwrap().evaluate(t);
+        v.lock().unwrap().evaluate(t);
     });
 }
 

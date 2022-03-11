@@ -1,4 +1,4 @@
-use crate::configuration::Config;
+use crate::configuration;
 use crate::solver;
 use std::{rc::Rc, cell::RefCell};
 use crate::helpers;
@@ -30,7 +30,7 @@ impl ColorShader{
 }
 impl Shader for ColorShader{
     fn shade(&self, x: u32, y: u32, i: solver::IntersectionInfo) -> [f64;3]{
-        if(i.hit){
+        if i.hit{
             return self.color.clone()
         }
         return self.background_shader.shade(x, y);
@@ -59,7 +59,7 @@ impl NormalShader{
 }
 impl Shader for NormalShader{
     fn shade(&self, x: u32, y: u32, i: solver::IntersectionInfo) -> [f64;3]{
-        if(i.hit){
+        if i.hit{
             return [i.normal[0] * 0.5 + 0.5, i.normal[1] * 0.5 + 0.5, i.normal[2] * 0.5 + 0.5]
         }
         return self.background_shader.shade(x, y);
@@ -96,7 +96,7 @@ impl Shader for FractalShader{
         let col2 = get_f64v!(self.col2);
         let light_dir = get_f64v!(self.light_dir);
 
-        if(i.hit){
+        if i.hit{
             let a = vecmath::vec3_dot([i.normal[0] * 0.5 + 0.5, i.normal[1] * 0.5 + 0.5, i.normal[2] * 0.5 + 0.5], light_dir).clamp(0.0, 1.0);
             let b = (i.fractal_data[0] / 16.0).clamp(0.0, 1.0);
             let color_mix = helpers::vec_clamp([a * col1[0] + b * col2[0], a * col1[1] + b * col2[1], a * col1[2] + b * col2[2]], 0.0, 1.0);
@@ -158,7 +158,7 @@ impl BackgroundLinearXGradient{
 }
 impl BackgroundShader for BackgroundLinearXGradient{
     fn shade(&self, x: u32, y: u32) -> [f64;3]{
-        return helpers::vec_interpolate(self.color1, self.color2, x as f64 / Config.width_f);
+        return helpers::vec_interpolate(self.color1, self.color2, x as f64 / configuration::width_f);
     }
     fn evaluate(&mut self, t: f64){
         
@@ -182,7 +182,7 @@ impl BackgroundLinearYGradient{
 }
 impl BackgroundShader for BackgroundLinearYGradient{
     fn shade(&self, x: u32, y: u32) -> [f64;3]{
-        return helpers::vec_interpolate(self.color1, self.color2, y as f64 / Config.height_f);
+        return helpers::vec_interpolate(self.color1, self.color2, y as f64 / configuration::height_f);
     }
     fn evaluate(&mut self, t: f64){
         

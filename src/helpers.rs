@@ -1,13 +1,11 @@
-use std::{rc::Rc, cell::RefCell};
-
 pub fn min_f64(a: f64, b: f64) -> f64{
-    if(a < b){
+    if a < b{
         return a
     }
     b
 }
 pub fn max_f64(a: f64, b: f64) -> f64{
-    if(a > b){
+    if a > b{
         return a
     }
     b

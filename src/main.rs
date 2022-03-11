@@ -1,9 +1,8 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
-use std::string;
 use std::thread::{JoinHandle, self};
-use std::{io, time::SystemTime};
+use std::{time::SystemTime};
 use std::{rc::Rc, cell::RefCell};
 
 #[macro_export]
@@ -137,6 +136,7 @@ mod transition;
 mod evaluator;
 mod modifier;
 mod primitive;
+mod sampler;
 mod cameras;
 mod filter;
 mod postprocessor;
@@ -144,20 +144,19 @@ mod film;
 mod solver;
 mod shader;
 mod renderers;
-use configuration::Config;
 use renderers::Renderer;
 
 
 fn main() {
 
-    if Config.video {
+    if configuration::video {
         let mut frames: Vec<Vec<u32>> = Vec::new();
-        for _t in 0..Config.threads{
+        for _t in 0..configuration::threads{
             frames.push(Vec::new())
         }
 
-        for i in Config.start_frame..Config.end_frame{
-            frames[(i % Config.threads) as usize].push(i);
+        for i in configuration::start_frame..configuration::end_frame{
+            frames[(i % configuration::threads) as usize].push(i);
         }
         
         let mut handles: Vec<JoinHandle<()>> = Vec::new();
@@ -174,7 +173,7 @@ fn main() {
         }
     }else {
         let start = SystemTime::now();
-        render_frames(vec!(Config.still_frame), "result");
+        render_frames(vec!(configuration::still_frame), "result");
         match start.elapsed() {
             Ok(start) => {
                 println!("Total in {}", start.as_millis() as f64 * 0.001);
@@ -203,7 +202,7 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
         [f64!(0.0), f64!(0.0), camera_pos_z_ref],
         f64v!([0.0, 0.0, 0.0])
     );
-    let mut pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+    let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
     // pos_modifier.push(Box::new(modifier::Distort::new(1.1, [0.0,0.0,0.0], 2.2)));
     let mut primitives = Vec::<Box<dyn primitive::Primitive>>::new();
 
@@ -239,16 +238,17 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
         evaluator::CombineEvaluatorInfo::new(3.0, 6.0, Box::new(evaluator::InterpolatorEvaluator::new_get(0.0, 0.8, 3.0, true, Box::new(transition::Smoothstep::new(2.0)))))
     ], gray_filter_ref.clone());
     let gray_filter = filter::GrayFilter::new(gray_filter_ref);
-
+    
+    let noise = postprocessor::NoisePostProcessor::new(f64!(0.01), f64!(0.005));
     
     let bloom_cut_ref = f64!(0.3);
-    evaluator::InterpolatorEvaluator::new(0.35, 0.3, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_cut_ref.clone());
+    evaluator::InterpolatorEvaluator::new(0.4, 0.35, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_cut_ref.clone());
     let bloom_factor_ref = f64!(1.0);
-    evaluator::InterpolatorEvaluator::new(1.0, 2.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_factor_ref.clone());
+    evaluator::InterpolatorEvaluator::new(0.5, 1.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_factor_ref.clone());
     let bloom_size_ref = f64!(3.0);
-    evaluator::InterpolatorEvaluator::new(3.0, 9.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_size_ref.clone());
+    evaluator::InterpolatorEvaluator::new(3.0, 6.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_size_ref.clone());
 
-    let film = film::BasicFilm::new(vec![Box::new(color_filter), Box::new(gray_filter)], vec![Box::new(postprocessor::BloomPostProcessor::new(bloom_cut_ref, bloom_factor_ref, bloom_size_ref))]);
+    let film = film::BasicFilm::new(vec![Box::new(color_filter), Box::new(gray_filter)], vec![Box::new(noise), Box::new(postprocessor::BloomPostProcessor::new(bloom_cut_ref, bloom_factor_ref, bloom_size_ref))]);
     let solver = solver::GeneralSolver::new(primitives);
     // let shader = shader::NormalShader::new();
 
@@ -260,18 +260,15 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
     let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader);
 
     for i in frames{
-        let t = i as f64 / Config.ups;
+        let t = i as f64 / configuration::ups;
 
         evaluator::evaluate(t);
         renderer.prepare_render();
         renderer.evaluate(t);
         renderer.render();
 
-        let img = renderer.get_image();
-        if file_name == "" {
-            img.save(format!("results/{}.png", i)).unwrap();
-        }else{
-            img.save(format!("results/{}.png", file_name)).unwrap();
-        }
+        let path = if file_name == "" {format!("results/{}.png", i)} else{format!("results/{}.png", file_name)};
+
+        renderer.save_image(&path);
     }
 }
