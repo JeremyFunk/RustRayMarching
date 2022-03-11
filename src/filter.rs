@@ -46,3 +46,34 @@ impl ColorShift{
         }
     }
 }
+
+
+
+
+pub struct GrayFilter {
+    strength: f64!()
+}
+
+impl Filter for GrayFilter{
+    fn filter_color(&self, x: u32, y: u32, col: [f64; 3]) -> [f64;3]{
+        let strength = get_f64!(self.strength);
+        let strength_inv = 1.0 - strength;
+        // println!("{}", strength_inv);
+        let brightness = (col[0] + col[1] + col[2]) * 0.33333 * strength;
+        [
+            col[0] * strength_inv + brightness,
+            col[1] * strength_inv + brightness,
+            col[2] * strength_inv + brightness,
+        ]
+    }
+    fn evaluate(&mut self, t: f64){
+        
+    }
+}
+impl GrayFilter{
+    pub fn new(strength: f64!()) -> GrayFilter{
+        GrayFilter{
+            strength
+        }
+    }
+}

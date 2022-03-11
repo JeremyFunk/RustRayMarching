@@ -1,5 +1,6 @@
 use crate::configuration::Config;
 use crate::helpers;
+use std::{rc::Rc, cell::RefCell};
 
 pub trait PosModifier{
     fn modify(&self, pos: [f64; 3]) -> [f64; 3];
@@ -12,14 +13,15 @@ pub trait DistModifier{
 }
 
 pub struct Distort {
-    factor: f64,
-    offset: [f64;3],
-    freq: f64
+    factor: f64!(),
+    offset: [f64!();3],
+    freq: f64!()
 }
 
 impl PosModifier for Distort{
     fn modify(&self, pos: [f64; 3]) -> [f64; 3]{
-        let m = (self.freq * pos[0] + self.offset[0]).sin() * (self.freq * pos[1] + self.offset[1]).sin() * (self.freq * pos[2] + self.offset[2]).sin() * self.factor;
+        let freq = get_f64!(self.freq);
+        let m = (freq * pos[0] + get_f64!(self.offset[0])).sin() * (freq * pos[1] + get_f64!(self.offset[1])).sin() * (freq * pos[2] + get_f64!(self.offset[2])).sin() * get_f64!(self.factor);
         return [pos[0] + m, pos[1] + m, pos[2] + m];
     }
     fn evaluate(&self, t: f64){
@@ -28,7 +30,7 @@ impl PosModifier for Distort{
 }
 
 impl Distort{
-    pub fn new(factor: f64, offset: [f64;3], freq: f64) -> Distort{
+    pub fn new(factor: f64!(), offset: [f64!();3], freq: f64!()) -> Distort{
         Distort{
             factor,offset,freq
         }
@@ -43,13 +45,14 @@ impl Distort{
 
 
 pub struct Twist {
-    power: f64,
+    power: f64!(),
 }
 
 impl PosModifier for Twist{
     fn modify(&self, pos: [f64; 3]) -> [f64; 3]{
-        let c = (self.power * pos[1]).cos();
-        let s = (self.power * pos[1]).sin();
+        let power = get_f64!(self.power);
+        let c = (power * pos[1]).cos();
+        let s = (power * pos[1]).sin();
         return [c * pos[0] - s * pos[2], s * pos[0] + c * pos[2], pos[1]];
     }
     fn evaluate(&self, t: f64){
@@ -58,7 +61,7 @@ impl PosModifier for Twist{
 }
 
 impl Twist{
-    pub fn new(power: f64) -> Twist{
+    pub fn new(power: f64!()) -> Twist{
         Twist{
             power
         }
@@ -76,13 +79,15 @@ impl Twist{
 
 
 pub struct Bend {
-    power: f64,
+    power: f64!(),
 }
 
 impl PosModifier for Bend{
     fn modify(&self, pos: [f64; 3]) -> [f64; 3]{
-        let c = (self.power * pos[0]).cos();
-        let s = (self.power * pos[0]).sin();
+        let power = get_f64!(self.power);
+
+        let c = (power * pos[0]).cos();
+        let s = (power * pos[0]).sin();
         return [c * pos[0] - s * pos[1], s * pos[0] + c * pos[1], pos[2]];
     }
     fn evaluate(&self, t: f64){
@@ -91,7 +96,7 @@ impl PosModifier for Bend{
 }
 
 impl Bend{
-    pub fn new(power: f64) -> Bend{
+    pub fn new(power: f64!()) -> Bend{
         Bend{
             power
         }
@@ -109,15 +114,16 @@ impl Bend{
 
 
 pub struct Repetition {
-    repetition_period: f64
+    repetition_period: f64!()
 }
 
 impl PosModifier for Repetition{
     fn modify(&self, pos: [f64; 3]) -> [f64; 3]{
+        let repetition_period = get_f64!(self.repetition_period);
         return [
-            ((pos[0] + 0.5 * self.repetition_period) % self.repetition_period) - 0.5 * self.repetition_period,
-            ((pos[1] + 0.5 * self.repetition_period) % self.repetition_period) - 0.5 * self.repetition_period,
-            ((pos[2] + 0.5 * self.repetition_period) % self.repetition_period) - 0.5 * self.repetition_period
+            ((pos[0] + 0.5 * repetition_period) % repetition_period) - 0.5 * repetition_period,
+            ((pos[1] + 0.5 * repetition_period) % repetition_period) - 0.5 * repetition_period,
+            ((pos[2] + 0.5 * repetition_period) % repetition_period) - 0.5 * repetition_period
         ]
     }
     
@@ -127,7 +133,7 @@ impl PosModifier for Repetition{
 }
 
 impl Repetition{
-    pub fn new(repetition_period: f64) -> Repetition{
+    pub fn new(repetition_period: f64!()) -> Repetition{
         Repetition{
             repetition_period
         }
@@ -146,16 +152,18 @@ impl Repetition{
 
 
 pub struct RepetitionLimited {
-    repetition_period: f64,
-    limiter: [f64;3]
+    repetition_period: f64!(),
+    limiter: [f64!();3]
 }
 
 impl PosModifier for RepetitionLimited{
     fn modify(&self, pos: [f64; 3]) -> [f64; 3]{
+        let limiter = get_f64v!(self.limiter);
+        let repetition_period = get_f64!(self.repetition_period);
         return [
-            (pos[0] - self.repetition_period * helpers::round(pos[0] / self.repetition_period).clamp(-self.limiter[0], self.limiter[0])),
-            (pos[1] - self.repetition_period * helpers::round(pos[1] / self.repetition_period).clamp(-self.limiter[1], self.limiter[1])),
-            (pos[2] - self.repetition_period * helpers::round(pos[2] / self.repetition_period).clamp(-self.limiter[2], self.limiter[2]))
+            (pos[0] - repetition_period * helpers::round(pos[0] / repetition_period).clamp(-limiter[0], limiter[0])),
+            (pos[1] - repetition_period * helpers::round(pos[1] / repetition_period).clamp(-limiter[1], limiter[1])),
+            (pos[2] - repetition_period * helpers::round(pos[2] / repetition_period).clamp(-limiter[2], limiter[2]))
         ];
     }
     fn evaluate(&self, t: f64){
@@ -164,7 +172,7 @@ impl PosModifier for RepetitionLimited{
 }
 
 impl RepetitionLimited{
-    pub fn new(repetition_period: f64, limiter: [f64;3]) -> RepetitionLimited{
+    pub fn new(repetition_period: f64!(), limiter: [f64!();3]) -> RepetitionLimited{
         RepetitionLimited{
             repetition_period,
             limiter,

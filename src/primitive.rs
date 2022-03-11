@@ -202,7 +202,6 @@ impl InternalPrimitive for Mandelbulb{
         let mut dr = 1.0;
         let mut r = 0.0;
         let mut iterations = 0;
-        // println!("{}",self.power.take());
         let pow = *self.power.as_ref().borrow();
 
         for i in 0..15{
@@ -235,6 +234,5 @@ impl InternalPrimitive for Mandelbulb{
         return &mut self.primtive_data;
     }
     fn _evaluate(&mut self, t: f64){
-        // println!("{}", self.power.take());
     }
 }

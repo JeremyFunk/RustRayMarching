@@ -20,7 +20,6 @@ impl Camera for PinholeCamera{
         let rx = (2.0 * (x + 0.5) / Config.width_f - 1.0) * self.ar * self.scale;
         let ry = (1.0 - 2.0 * (y + 0.5) / Config.height_f) * self.scale;
         let dir = vecmath::vec3_normalized([rx, ry, -1.0]);
-        // println!("{:?}", self.pos_f64);
         return (helpers::mat_dir_mul(self.mat_inv, dir), [self.pos_f64[0], self.pos_f64[1],self.pos_f64[2]])
     }
     fn evaluate(&mut self, t: f64){
@@ -40,7 +39,6 @@ impl PinholeCamera{
         let ar = w_f/h_f;
         let scale = (Config.fov * 0.5).to_radians();
         let mat = vecmath::mat4_inv( helpers::mat_pos_rot(get_f64v!(pos), get_f64v!(rot)));
-        println!("{:?}", pos);
         let pos_f64 = [
             get_f64!(pos[0]),
             get_f64!(pos[1]),
