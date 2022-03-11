@@ -1,5 +1,6 @@
 use crate::cameras;
 use crate::film;
+use crate::sampler::Sampler;
 use crate::solver;
 use crate::shader;
 use crate::configuration;
@@ -55,11 +56,12 @@ impl<C: cameras::Camera, F: film::Film> CameraRayRenderer<C, F>{
 
 
 
-pub struct SolverRenderer<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader> {
+pub struct SolverRenderer<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A: Sampler> {
     camera: C,
     film: F,
     solver: S,
-    shader: H
+    shader: H,
+    sampler: A
 }
 
 fn generate_samples() -> [[f64;2];(configuration::samples*configuration::samples) as usize]{
@@ -72,13 +74,13 @@ fn generate_samples() -> [[f64;2];(configuration::samples*configuration::samples
     return elements
 }
 
-impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader> Renderer for SolverRenderer<C, F, S, H>{
+impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A: Sampler> Renderer for SolverRenderer<C, F, S, H, A>{
     fn render(&mut self){
         let sample_inv = 1.0 / ((configuration::samples * configuration::samples) as f64);
         for x in 0..configuration::width{
             for y in 0..configuration::height{
-                for s in generate_samples() {
-                    let ray = self.camera.generate_ray(x as f64 + (s[0] as f64), y as f64 + (s[1] as f64));
+                for s in self.sampler.generate_samples(x, y) {
+                    let ray = self.camera.generate_ray(x as f64 + s[0], y as f64 + s[1]);
                     // let ray = self.camera.generate_ray(x as f64, y as f64);
                     let i = self.solver.solve(ray);
                     let col = self.shader.shade(x, y, i);
@@ -101,13 +103,14 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader> Re
     }
 }
 
-impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader> SolverRenderer<C, F, S, H>{
-    pub fn new(camera: C, film: F, solver: S, shader: H) -> SolverRenderer<C, F, S, H>{
+impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A: Sampler> SolverRenderer<C, F, S, H, A>{
+    pub fn new(camera: C, film: F, solver: S, shader: H, sampler: A) -> SolverRenderer<C, F, S, H, A>{
         SolverRenderer{
             camera: camera,
             film: film,
             solver,
-            shader
+            shader,
+            sampler
         }
     }
 }

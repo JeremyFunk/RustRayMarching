@@ -248,7 +248,7 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
     let bloom_size_ref = f64!(3.0);
     evaluator::InterpolatorEvaluator::new(3.0, 6.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_size_ref.clone());
 
-    let film = film::BasicFilm::new(vec![Box::new(color_filter), Box::new(gray_filter)], vec![Box::new(noise), Box::new(postprocessor::BloomPostProcessor::new(bloom_cut_ref, bloom_factor_ref, bloom_size_ref))]);
+    let film = film::BasicFilm::new(vec![Box::new(color_filter), Box::new(gray_filter)], vec![]);
     let solver = solver::GeneralSolver::new(primitives);
     // let shader = shader::NormalShader::new();
 
@@ -257,7 +257,8 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
     evaluator::InterpolatorEvaluator::new(-45.0, 90.0, 3.0, true, Box::new(transition::Linear::new()),shader_rot_z.clone());
     let shader = shader::FractalShader::new(f64v!([0.4, 0.1, 0.2]), f64v!([0.9, 0.2, 0.3]), f64!(30.0), [shader_rot_z, f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
     // let mut renderer= renderers::CameraRayRenderer::new(camera, film);
-    let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader);
+    let sampler = sampler::JitterSampler::new(25.0);
+    let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
 
     for i in frames{
         let t = i as f64 / configuration::ups;
