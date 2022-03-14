@@ -129,6 +129,9 @@ macro_rules! f64v {
 // }
 // D, O
 type Ray = ([f64;3],[f64;3]);
+type Sample = (f64,f64);
+// FilmSample, LensSample
+type CameraSample = (Sample,Sample);
 mod configuration;
 // mod evaluator
 mod helpers;
@@ -196,9 +199,11 @@ fn main() {
 }
 
 fn render_frames(frames: Vec<u32>, file_name: &str){
-    let camera_pos_z_ref = f64!(2.5);
-    evaluator::InterpolatorEvaluator::new(2.5, 2.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), camera_pos_z_ref.clone());
-    let camera = cameras::PinholeCamera::new(
+    let camera_pos_z_ref = f64!(2.6);
+    evaluator::InterpolatorEvaluator::new(2.6, 2.2, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), camera_pos_z_ref.clone());
+    let camera = cameras:: PinholeCamera::new(
+        // f64!(0.005),
+        // f64!(2.2),
         [f64!(0.0), f64!(0.0), camera_pos_z_ref],
         f64v!([0.0, 0.0, 0.0])
     );
@@ -240,24 +245,27 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
     let gray_filter = filter::GrayFilter::new(gray_filter_ref);
     
     let noise = postprocessor::NoisePostProcessor::new(f64!(0.01), f64!(0.005));
-    
+
     let bloom_cut_ref = f64!(0.3);
-    evaluator::InterpolatorEvaluator::new(0.4, 0.35, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_cut_ref.clone());
+    evaluator::InterpolatorEvaluator::new(0.35, 0.3, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_cut_ref.clone());
     let bloom_factor_ref = f64!(1.0);
-    evaluator::InterpolatorEvaluator::new(0.5, 1.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_factor_ref.clone());
+    evaluator::InterpolatorEvaluator::new(1.0, 2.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_factor_ref.clone());
     let bloom_size_ref = f64!(3.0);
     evaluator::InterpolatorEvaluator::new(3.0, 6.0, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), bloom_size_ref.clone());
 
-    let film = film::BasicFilm::new(vec![Box::new(color_filter), Box::new(gray_filter)], vec![]);
-    let solver = solver::GeneralSolver::new(primitives);
-    // let shader = shader::NormalShader::new();
+    let bloom = postprocessor::BloomPostProcessor::new(bloom_cut_ref, bloom_factor_ref, bloom_size_ref);
 
+    let film = film::BasicFilm::new(vec![Box::new(color_filter), Box::new(gray_filter)], vec![Box::new(bloom), Box::new(noise)]);
+    let solver = solver::GeneralSolver::new(primitives);
     let bg_shader = shader::BackgroundLinearYGradient::new([0.05, 0.02, 0.04], [0.1, 0.06, 0.06]);
+    // let shader = shader::NormalShader::new(Box::new(bg_shader));
+
+    
     let shader_rot_z = f64!(-45.0);
     evaluator::InterpolatorEvaluator::new(-45.0, 90.0, 3.0, true, Box::new(transition::Linear::new()),shader_rot_z.clone());
-    let shader = shader::FractalShader::new(f64v!([0.4, 0.1, 0.2]), f64v!([0.9, 0.2, 0.3]), f64!(30.0), [shader_rot_z, f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
+    let shader = shader::FractalShader::new(f64v!([0.1, 0.1, 0.4]), f64v!([0.2, 0.9, 0.8]), f64!(30.0), [shader_rot_z, f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
     // let mut renderer= renderers::CameraRayRenderer::new(camera, film);
-    let sampler = sampler::JitterSampler::new(25.0);
+    let sampler = sampler::JitterSampler::new(0.5);
     let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
 
     for i in frames{

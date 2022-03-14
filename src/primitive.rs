@@ -1,3 +1,4 @@
+use crate::configuration;
 use crate::helpers;
 use crate::modifier;
 use std::{rc::Rc, cell::RefCell};
@@ -82,7 +83,7 @@ impl Sphere{
 
 impl InternalPrimitive for Sphere{
     fn _map_primitive(&self, pos: [f64;3]) -> PrimitiveResult{
-        let distance = vecmath::vec3_len(pos) - self.rad.take();
+        let distance = vecmath::vec3_len(pos) - get_f64!(self.rad);
         PrimitiveResult{distance, fractal_data: [0.0, 0.0, 0.0]}
     }
     fn get_primitive_data(&self) -> &PrimitiveData{
@@ -122,8 +123,8 @@ impl Torus{
 
 impl InternalPrimitive for Torus{
     fn _map_primitive(&self, pos: [f64;3]) -> PrimitiveResult{
-        let l = (pos[0] * pos[0] + pos[2] * pos[2]).sqrt() - self.rad.take();
-        let distance = (l * l + pos[1] * pos[1]).sqrt() - self.ring_rad.take();
+        let l = (pos[0] * pos[0] + pos[2] * pos[2]).sqrt() - get_f64!(self.rad);
+        let distance = (l * l + pos[1] * pos[1]).sqrt() - get_f64!(self.ring_rad);
         PrimitiveResult{distance, fractal_data: [0.0, 0.0, 0.0]}
     }
     fn get_primitive_data(&self) -> &PrimitiveData{
@@ -161,7 +162,7 @@ impl Cube{
 
 impl InternalPrimitive for Cube{
     fn _map_primitive(&self, pos: [f64;3]) -> PrimitiveResult{
-        let dist_vec = [pos[0].abs() - self.bounds[0].take(), pos[1].abs() - self.bounds[1].take(), pos[2].abs() - self.bounds[2].take()];
+        let dist_vec = [pos[0].abs() - get_f64!(self.bounds[0]), pos[1].abs() - get_f64!(self.bounds[1]), pos[2].abs() - get_f64!(self.bounds[2])];
         let distance = helpers::min_f64(helpers::max_f64(dist_vec[0],helpers::max_f64(dist_vec[1], dist_vec[2])), 0.0) + vecmath::vec3_len(helpers::vec_f_max(dist_vec, 0.0));
         PrimitiveResult{distance, fractal_data: [0.0, 0.0, 0.0]}
     }

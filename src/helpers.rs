@@ -113,7 +113,29 @@ pub fn mat_pos_rot(pos: [f64;3], rot: [f64;3]) -> [[f64;4];4]{
     return rotation_matrix
 }
 
+const PI_OVER_2: f64 = 1.57079632679489661923;
+const PI_OVER_4: f64 = 0.78539816339744830961;
 
+
+pub fn concentric_sample_disk(sample_x: f64, sample_y: f64) -> Sample{
+    let offset_x = 2.0 * sample_x - 1.0;
+    let offset_y = 2.0 * sample_y - 1.0;
+
+    if offset_x == 0.0 && offset_y == 0.0{
+        return (0.0, 0.0)
+    }
+    let theta: f64;
+    let r: f64;
+    if offset_x.abs() > offset_y.abs(){
+        r = offset_x;
+        theta = PI_OVER_4 * (offset_y / offset_x);
+    }else{
+        r = offset_y;
+        theta = PI_OVER_2 - PI_OVER_4 * (offset_x / offset_y);
+    }
+
+    (r * theta.cos(), r * theta.sin())
+}
 
 
 
@@ -152,6 +174,8 @@ pub fn mat_pos_rot(pos: [f64;3], rot: [f64;3]) -> [[f64;4];4]{
 
 // Uses a for f64 modified form of https://github.com/fschutt/fastblur
 use std::cmp::min;
+
+use crate::Sample;
 
 pub fn gaussian_blur(data: &mut Vec<[f64;3]>, width: usize, height: usize, blur_radius: f64)
 {

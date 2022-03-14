@@ -21,7 +21,7 @@ impl<C: cameras::Camera, F: film::Film> Renderer for CameraRayRenderer<C, F>{
     fn render(&mut self){
         for x in 0..configuration::width{
             for y in 0..configuration::height{
-                let ray = self.camera.generate_ray(x as f64, y as f64);
+                let ray = self.camera.generate_ray(x as f64, y as f64, ((0.0,0.0),(0.0,0.0)));
                 self.film.write_pixel(x, y, ray.0);
             }
         }
@@ -80,7 +80,7 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A:
         for x in 0..configuration::width{
             for y in 0..configuration::height{
                 for s in self.sampler.generate_samples(x, y) {
-                    let ray = self.camera.generate_ray(x as f64 + s[0], y as f64 + s[1]);
+                    let ray = self.camera.generate_ray(x as f64, y as f64, s);
                     // let ray = self.camera.generate_ray(x as f64, y as f64);
                     let i = self.solver.solve(ray);
                     let col = self.shader.shade(x, y, i);
