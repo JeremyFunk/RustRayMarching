@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
+use std::borrow::BorrowMut;
 use std::thread::{JoinHandle, self};
 use std::{time::SystemTime};
 use std::{rc::Rc, cell::RefCell};
@@ -147,11 +148,63 @@ mod film;
 mod solver;
 mod shader;
 mod renderers;
+mod scene;
 use renderers::Renderer;
 
 
 fn main() {
+    if configuration::render_scene {
+        render_scene();
+    } else {
+        render_code();
+    }
+}
 
+fn render_scene(){
+    let scene = scene::load_scene("test.rma.json");
+    let mut primitives = Vec::<Box<dyn primitive::Primitive>>::new();
+    for so in scene.objects{
+        if so.prim_type == 1 {
+            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+            primitives.push(Box::new(primitive::Sphere::new(f64!(so.values[0]), f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+        }
+        if so.prim_type == 2 {
+            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+            primitives.push(Box::new(primitive::Torus::new(f64!(so.values[0]), f64!(so.values[1]), f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+        }
+        if so.prim_type == 3 {
+            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+            primitives.push(Box::new(primitive::Cube::new(f64v![[so.values[0], so.values[1], so.values[2]]], f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+        }
+        if so.prim_type == 4 {
+            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+            primitives.push(Box::new(primitive::Mandelbulb::new(f64!(so.values[0]), f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+        }
+    }
+    let camera = cameras:: PinholeCamera::new(
+        f64v!([0.0, 0.0, 2.6]),
+        f64v!([0.0, 0.0, 0.0])
+    );
+    let film = film::BasicFilm::new(vec![], vec![]);
+    let solver = solver::GeneralSolver::new(primitives);
+    let bg_shader = shader::BackgroundLinearYGradient::new([0.05, 0.02, 0.04], [0.1, 0.06, 0.06]);
+    let shader = shader::NormalShader::new(Box::new(bg_shader));
+    //let shader = shader::FractalShader::new(f64v!([0.1, 0.1, 0.4]), f64v!([0.2, 0.9, 0.8]), f64!(30.0), [f64!(0.0), f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
+    let sampler = sampler::JitterSampler::new(0.5);
+    let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
+
+    let t = 0.0;
+
+    evaluator::evaluate(t);
+    renderer.prepare_render();
+    renderer.evaluate(t);
+    renderer.render();
+
+    let path = "result.png";
+    renderer.save_image(&path);
+}
+
+fn render_code(){
     if configuration::video {
         let mut frames: Vec<Vec<u32>> = Vec::new();
         for _t in 0..configuration::threads{
@@ -186,16 +239,6 @@ fn main() {
             }
         }
     }
-    
-
-    //     // Construct a new RGB ImageBuffer with the specified width and height.
-    // let mut img: RgbImage = ImageBuffer::new(512, 512);
-
-    // for (x, y, pixel) in img.enumerate_pixels_mut() {
-    //     let r = (0.3 * x as f32) as u8;
-    //     let b = (0.3 * y as f32) as u8;
-    //     *pixel = image::Rgb([r, 0, b]);
-    // }
 }
 
 fn render_frames(frames: Vec<u32>, file_name: &str){
@@ -266,8 +309,8 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
     let shader = shader::FractalShader::new(f64v!([0.1, 0.1, 0.4]), f64v!([0.2, 0.9, 0.8]), f64!(30.0), [shader_rot_z, f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
     // let mut renderer= renderers::CameraRayRenderer::new(camera, film);
     let sampler = sampler::JitterSampler::new(0.5);
+    //let mut renderer= renderers::CameraRayRenderer::new(camera, film);
     let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
-
     for i in frames{
         let t = i as f64 / configuration::ups;
 
