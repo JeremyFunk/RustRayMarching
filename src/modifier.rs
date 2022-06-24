@@ -1,4 +1,5 @@
 use crate::helpers;
+use crate::configuration;
 use std::{rc::Rc, cell::RefCell};
 
 pub trait PosModifier{
@@ -10,6 +11,7 @@ pub trait DistModifier{
     fn modify(&self, dist: f64) -> f64;
     fn evaluate(&self, t: f64);
 }
+
 
 pub struct Distort {
     factor: f64!(),

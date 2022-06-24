@@ -10,6 +10,10 @@ pub fn max_f64(a: f64, b: f64) -> f64{
     }
     b
 }
+#[inline(always)]
+pub fn mix(a: f64, b: f64, f: f64) -> f64{
+    return a * (1.0 - f) + b * f;
+}
 
 pub fn round(v: f64) -> f64{
     return v - (v % 1.0);
@@ -43,6 +47,13 @@ pub fn mat_vec_mul(matrix: [[f64;4];4], d: [f64;3]) -> [f64;3]{
 }
     
 pub fn mat_dir_mul(matrix: [[f64;4];4], d: [f64;3]) -> [f64;3]{
+    let x = d[0] * matrix[0][0] + d[1] * matrix[1][0] + d[2] * matrix[2][0];
+    let y = d[0] * matrix[0][1] + d[1] * matrix[1][1] + d[2] * matrix[2][1];
+    let z = d[0] * matrix[0][2] + d[1] * matrix[1][2] + d[2] * matrix[2][2];
+    return [x, y, z]
+}
+    
+pub fn mat_dir_mul3(matrix: [[f64;3];3], d: [f64;3]) -> [f64;3]{
     let x = d[0] * matrix[0][0] + d[1] * matrix[1][0] + d[2] * matrix[2][0];
     let y = d[0] * matrix[0][1] + d[1] * matrix[1][1] + d[2] * matrix[2][1];
     let z = d[0] * matrix[0][2] + d[1] * matrix[1][2] + d[2] * matrix[2][2];
@@ -86,6 +97,45 @@ pub fn mat_rotation(rot: [f64;3]) -> [[f64;4];4]{
     return vecmath::row_mat4_mul(vecmath::row_mat4_mul(x_mat, y_mat), z_mat)
 }
 
+
+pub fn mat_rotation3(rot: [f64;3]) -> [[f64;3];3]{
+    
+    let x = rot[0].to_radians();
+    let y = rot[1].to_radians();
+    let z = rot[2].to_radians();
+
+    let x_cos = x.cos();
+    let x_sin = x.sin();
+    let mut x_mat = vecmath::mat3_id();
+    
+    x_mat[1][1] = x_cos;
+    x_mat[1][2] = -x_sin;
+    x_mat[2][1] = x_sin;
+    x_mat[2][2] = x_cos;
+
+    let y_cos = y.cos();
+    let y_sin = y.sin();
+    let mut y_mat = vecmath::mat3_id();
+    
+    y_mat[0][0] = y_cos;
+    y_mat[0][2] = y_sin;
+    y_mat[2][0] = -y_sin;
+    y_mat[2][2] = y_cos;
+
+    
+    let z_cos = z.cos();
+    let z_sin = z.sin();
+    let mut z_mat = vecmath::mat3_id();
+    
+    z_mat[0][0] = z_cos;
+    z_mat[0][1] = -z_sin;
+    z_mat[1][0] = z_sin;
+    z_mat[1][1] = z_cos;
+
+    return vecmath::row_mat3_mul(vecmath::row_mat3_mul(z_mat, y_mat), x_mat)
+}
+
+
 pub fn mat_scale(scale: [f64;3]) -> [[f64;4];4]{
     let mut m = vecmath::mat4_id();
     m[0][0] = scale[0];
@@ -113,6 +163,14 @@ pub fn mat_pos_rot(pos: [f64;3], rot: [f64;3]) -> [[f64;4];4]{
     return rotation_matrix
 }
 
+pub fn mat_rot_scale(rot: [f64;3], scale: [f64;3]) -> [[f64;3];3]{
+    let mut rotation_matrix = mat_rotation3(rot);
+    rotation_matrix[0][0] *= scale[0];
+    rotation_matrix[1][1] *= scale[1];
+    rotation_matrix[2][2] *= scale[2];
+    return rotation_matrix;
+}
+
 const PI_OVER_2: f64 = 1.57079632679489661923;
 const PI_OVER_4: f64 = 0.78539816339744830961;
 
@@ -137,10 +195,17 @@ pub fn concentric_sample_disk(sample_x: f64, sample_y: f64) -> Sample{
     (r * theta.cos(), r * theta.sin())
 }
 
+#[inline(always)]
+pub fn dot_product(a: [f64;3], b: [f64;3]) -> f64{
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
 
 
-
-
+#[inline(always)]
+pub fn reflect(indicent: [f64;3], normal: [f64;3]) -> [f64;3] {
+    let f = 2.0 * dot_product(indicent, normal);
+    return [indicent[0] - f * normal[0], indicent[1] - f * normal[1], indicent[2] - f * normal[2]];
+}
 
 
 

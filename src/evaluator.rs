@@ -68,6 +68,51 @@ pub fn convert_to_evaluator(a: [f64;3], pointer: f64v!()){
 }
 
 
+pub struct Keyframe{
+    pub frame: f64,
+    pub value: f64
+}
+
+impl Keyframe{
+    pub fn new(frame: f64, value: f64) -> Keyframe{
+        Keyframe { frame: frame, value: value }
+    }
+}
+
+pub struct KeyframeEvaluator{
+    keyframes: Vec<Keyframe>,
+}
+
+impl Evaluator for KeyframeEvaluator{
+    fn evaluate(&self, t: f64) -> f64{
+        for (i, k) in self.keyframes.iter().enumerate(){
+            if t < k.frame {
+                if i == 0 {
+                    return k.value
+                }else{
+                    let low = &self.keyframes[i-1];
+
+                    let f = (t - low.frame) / (k.frame - low.frame);
+
+                    return low.value * (1.0 - f) + k.value * f;
+                }
+            }
+        }
+        self.keyframes[self.keyframes.len() - 1].value
+    }
+}
+
+impl KeyframeEvaluator{
+    pub fn new(keyframes: Vec<Keyframe>, pointer: f64!()){
+        let new_f = KeyframeEvaluator{keyframes};
+        insert_evaluator(pointer, Box::new(new_f));
+    }
+    pub fn new_get(value: f64, keyframes: Vec<Keyframe>) -> KeyframeEvaluator{
+        KeyframeEvaluator{keyframes}
+    }
+}
+
+
 pub struct InterpolatorEvaluator{
     min: f64,
     max: f64,
@@ -138,3 +183,5 @@ impl CombineEvaluator{
         insert_evaluator(pointer, Box::new(new_f));
     }
 }
+
+

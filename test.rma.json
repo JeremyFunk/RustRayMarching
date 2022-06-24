@@ -1,41 +1,132 @@
 {
+    "camera": {
+        "cam_pos": [
+            {
+                "keyframes": [
+                    { "frame": 0, "value": -1.3839811086654663 },
+                    { "frame": 30, "value": -0.6855162382125854 },
+                    { "frame": 45, "value": -0.2930000126361847 }
+                ],
+                "value": -0.2930000126361847
+            },
+            {
+                "keyframes": [
+                    { "frame": 0, "value": 1.9166183471679688 },
+                    { "frame": 30, "value": 1.7024993896484375 },
+                    { "frame": 45, "value": 1.6950000524520874 }
+                ],
+                "value": 1.6950000524520874
+            },
+            {
+                "keyframes": [
+                    { "frame": 0, "value": 3.4305224418640137 },
+                    { "frame": 30, "value": 3.9601922035217285 },
+                    { "frame": 45, "value": 3.6859216690063477 }
+                ],
+                "value": 3.6859216690063477
+            }
+        ],
+        "cam_py": [
+            {
+                "keyframes": [
+                    { "frame": 0, "value": 25.5 },
+                    { "frame": 30, "value": 22.0 },
+                    { "frame": 45, "value": 26.0 }
+                ],
+                "value": 26.0
+            },
+            {
+                "keyframes": [
+                    { "frame": 0, "value": -53.0 },
+                    { "frame": 30, "value": -75.5 },
+                    { "frame": 45, "value": -75.5 }
+                ],
+                "value": -75.5
+            }
+        ]
+    },
     "group_modifiers": [
         {
-            "modifier": 5,
-            "prim0": 1,
-            "prim1": 0,
+            "modifier": 4,
+            "prim0": 0,
+            "prim1": 1,
             "prim2": -1,
             "prim3": -1,
-            "prim_attribute": 0.20000000298023224
+            "prim_attribute": {
+                "keyframes": [
+                    { "frame": 0, "value": 0.8199999928474426 },
+                    { "frame": 54, "value": 0.8199999928474426 },
+                    { "frame": 100, "value": 0.4099999964237213 }
+                ],
+                "value": 0.7576087117195129
+            }
         }
     ],
     "objects": [
         {
             "modifiers": [],
             "name": "Cube",
-            "position": [1.0, 0.0, 0.0],
+            "position": [
+                {
+                    "keyframes": [
+                        { "frame": 0, "value": 1.600000023841858 },
+                        { "frame": 22, "value": 1.5099999904632568 },
+                        { "frame": 30, "value": 1.4800000190734863 },
+                        { "frame": 40, "value": 1.5099999904632568 }
+                    ],
+                    "value": 1.5099999904632568
+                },
+                { "value": 0.0 },
+                { "value": 0.0 }
+            ],
             "prim_type": 3,
-            "rotation": [0.0, 0.0, 0.0],
-            "scale": [1.0, 1.0, 1.0],
-            "values": [1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            "rotation": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
+            "scale": [{ "value": 1.0 }, { "value": 1.0 }, { "value": 1.0 }],
+            "values": [
+                { "value": 1.0 },
+                { "value": 1.0 },
+                { "value": 1.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 }
+            ]
         },
         {
             "modifiers": [],
             "name": "Sphere",
-            "position": [0.0, 0.0, 0.0],
+            "position": [
+                {
+                    "keyframes": [
+                        { "frame": 0, "value": -0.8999999761581421 },
+                        { "frame": 31, "value": 0.23999999463558197 },
+                        { "frame": 60, "value": 0.9100000262260437 },
+                        { "frame": 90, "value": 1.4700000286102295 },
+                        { "frame": 100, "value": 1.75 }
+                    ],
+                    "value": 0.9286667108535767
+                },
+                { "value": 0.0 },
+                { "value": 0.0 }
+            ],
             "prim_type": 1,
-            "rotation": [0.0, 0.0, 0.0],
-            "scale": [1.0, 1.0, 1.0],
-            "values": [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        },
-        {
-            "modifiers": [],
-            "name": "Torus",
-            "position": [0.0, 0.0, 0.0],
-            "prim_type": 2,
-            "rotation": [0.0, 0.0, 0.0],
-            "scale": [1.0, 1.0, 1.0],
-            "values": [1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            "rotation": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
+            "scale": [{ "value": 1.0 }, { "value": 1.0 }, { "value": 1.0 }],
+            "values": [
+                { "value": 1.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 }
+            ]
         }
     ]
 }

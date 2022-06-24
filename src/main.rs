@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
-use std::borrow::BorrowMut;
+use std::borrow::{BorrowMut, Borrow};
 use std::thread::{JoinHandle, self};
 use std::{time::SystemTime};
 use std::{rc::Rc, cell::RefCell};
@@ -149,10 +149,16 @@ mod solver;
 mod shader;
 mod renderers;
 mod scene;
+mod light;
+use primitive::Material;
 use renderers::Renderer;
+use scene::SceneObject;
+use std::time::{Duration, Instant};
 
 
 fn main() {
+    //println!("{:?}", helpers::mat_transformation([0.0, 0.0, 0.0], [90.0, 0.0, 0.0], [2.0, 3.0, 4.0]));
+    //return;
     if configuration::render_scene {
         render_scene();
     } else {
@@ -160,48 +166,168 @@ fn main() {
     }
 }
 
+fn add_prim(so: &SceneObject) -> Box<dyn primitive::Primitive>{
+    let mut m = Material::new_base();
+    m.albedo = f64!(1.0);
+    m.specular = f64!(0.8);
+    m.diffuse = f64!(0.2);
+    m.n_specular = f64!(10.0);
+
+    if so.prim_type == 1 {
+        let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+        return Box::new(primitive::Sphere::new(so.values[0].to_owned(), [so.position[0].to_owned(), so.position[1].to_owned(), so.position[2].to_owned()], [so.rotation[0].to_owned(), so.rotation[1].to_owned(), so.rotation[2].to_owned()], [so.scale[0].to_owned(), so.scale[1].to_owned(), so.scale[2].to_owned()], pos_modifier,  Some(m)));
+    }
+    if so.prim_type == 2 {
+        let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+        return Box::new(primitive::Torus::new(so.values[0].to_owned(), so.values[1].to_owned(), [so.position[0].to_owned(), so.position[1].to_owned(), so.position[2].to_owned()], [so.rotation[0].to_owned(), so.rotation[1].to_owned(), so.rotation[2].to_owned()], [so.scale[0].to_owned(), so.scale[1].to_owned(), so.scale[2].to_owned()], pos_modifier, Some(m)));
+    }
+    if so.prim_type == 3 {
+        let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+        return Box::new(primitive::Cube::new([so.values[0].to_owned(), so.values[1].to_owned(), so.values[2].to_owned()], [so.position[0].to_owned(), so.position[1].to_owned(), so.position[2].to_owned()], [so.rotation[0].to_owned(), so.rotation[1].to_owned(), so.rotation[2].to_owned()], [so.scale[0].to_owned(), so.scale[1].to_owned(), so.scale[2].to_owned()], pos_modifier, Some(m)));
+    }
+    else {
+        let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+        return Box::new(primitive::Mandelbulb::new(so.values[0].to_owned(), [so.position[0].to_owned(), so.position[1].to_owned(), so.position[2].to_owned()], [so.rotation[0].to_owned(), so.rotation[1].to_owned(), so.rotation[2].to_owned()], [so.scale[0].to_owned(), so.scale[1].to_owned(), so.scale[2].to_owned()], pos_modifier));
+    }
+}
+
 fn render_scene(){
-    let scene = scene::load_scene("test.rma.json");
-    let mut primitives = Vec::<Box<dyn primitive::Primitive>>::new();
-    for so in scene.objects{
-        if so.prim_type == 1 {
-            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
-            primitives.push(Box::new(primitive::Sphere::new(f64!(so.values[0]), f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+    if configuration::video {
+        let mut frames: Vec<Vec<u32>> = Vec::new();
+        for _t in 0..configuration::threads{
+            frames.push(Vec::new())
         }
-        if so.prim_type == 2 {
-            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
-            primitives.push(Box::new(primitive::Torus::new(f64!(so.values[0]), f64!(so.values[1]), f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+
+        for i in configuration::start_frame..configuration::end_frame{
+            frames[(i % configuration::threads) as usize].push(i);
         }
-        if so.prim_type == 3 {
-            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
-            primitives.push(Box::new(primitive::Cube::new(f64v![[so.values[0], so.values[1], so.values[2]]], f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+        
+        let mut handles: Vec<JoinHandle<()>> = Vec::new();
+
+        for current_frame in frames{
+            let handle: JoinHandle<()>;
+
+            if configuration::render_scene { 
+                handle = thread::spawn(|| {
+                    render_frames(current_frame, "");
+                });
+            }else{
+                handle = thread::spawn(|| {
+                    render_frames_code(current_frame, "");
+                });
+            }
+
+            handles.push(handle);
         }
-        if so.prim_type == 4 {
-            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
-            primitives.push(Box::new(primitive::Mandelbulb::new(f64!(so.values[0]), f64v![[so.position[0], so.position[1], so.position[2]]], f64v![[so.rotation[0], so.rotation[1], so.rotation[2]]], f64v![[so.scale[0], so.scale[1], so.scale[2]]], pos_modifier)));
+
+        for h in handles{
+            h.join().unwrap();
+        }
+    }else {
+        let start = SystemTime::now();
+        if configuration::render_scene { 
+            render_frames(vec!(configuration::still_frame), "result");
+        }else{
+            render_frames_code(vec!(configuration::still_frame), "result");
+        }
+        
+        match start.elapsed() {
+            Ok(start) => {
+                println!("Total in {}", start.as_millis() as f64 * 0.001);
+            }
+            Err(e) => {
+                println!("Error: {:?}", e);
+            }
         }
     }
+}
+
+fn render_frames(frames: Vec<u32>, file_name: &str){
+    let scene = scene::load_scene("test.rma.json");
+    let mut primitives = Vec::<Box<dyn primitive::Primitive>>::new();
+    
+    let mut group_modifier_indices: Vec<i32> = Vec::new();
+
+    for go in scene.group_modifiers{
+        if go.prim0 != -1 && go.prim1 != -1 {
+            let mut cur_prims: Vec<Box<dyn primitive::Primitive>> = Vec::new();
+            group_modifier_indices.push(go.prim0);
+            cur_prims.push(add_prim(&scene.objects[go.prim0 as usize]));
+            group_modifier_indices.push(go.prim1);
+            cur_prims.push(add_prim(&scene.objects[go.prim1 as usize]));
+            if go.prim2 != -1 {
+                group_modifier_indices.push(go.prim2);
+                cur_prims.push(add_prim(&scene.objects[go.prim2 as usize]));
+            }
+            if go.prim3 != -1 {
+                group_modifier_indices.push(go.prim3);
+                cur_prims.push(add_prim(&scene.objects[go.prim3 as usize]));
+            }
+            if go.modifier == 1 {
+                primitives.push(Box::new(primitive::GroupPrimitive::new_union(cur_prims)));
+            }
+            else if go.modifier == 2 {
+                primitives.push(Box::new(primitive::GroupPrimitive::new_subtraction(cur_prims)));
+            }
+            else if go.modifier == 3 {
+                primitives.push(Box::new(primitive::GroupPrimitive::new_intersection(cur_prims)));
+            }
+            else if go.modifier == 4 {
+                primitives.push(Box::new(primitive::GroupPrimitive::new_union_smooth(cur_prims, go.prim_attribute)));
+            }
+            else if go.modifier == 5 {
+                primitives.push(Box::new(primitive::GroupPrimitive::new_subtraction_smooth(cur_prims, go.prim_attribute)));
+            }
+            else if go.modifier == 6 {
+                primitives.push(Box::new(primitive::GroupPrimitive::new_intersection_smooth(cur_prims, go.prim_attribute)));
+            }
+        }
+    }
+    for so in 0..scene.objects.len() {
+        let mut found = false;
+        for i in 0..group_modifier_indices.len(){
+            if group_modifier_indices[i] == so as i32{
+                found = true;
+                break;
+            }
+        }
+        if !found {
+            let pos_modifier = Vec::<Box<dyn modifier::PosModifier>>::new();
+            primitives.push(add_prim(&scene.objects[so]));
+        }
+    }
+    
     let camera = cameras:: PinholeCamera::new(
-        f64v!([0.0, 0.0, 2.6]),
-        f64v!([0.0, 0.0, 0.0])
+        [scene.camera.cam_pos[0].to_owned(), scene.camera.cam_pos[1].to_owned(), scene.camera.cam_pos[2].to_owned()],
+        [scene.camera.cam_py[0].to_owned(), scene.camera.cam_py[1].to_owned(), f64!(0.0)]
     );
     let film = film::BasicFilm::new(vec![], vec![]);
     let solver = solver::GeneralSolver::new(primitives);
     let bg_shader = shader::BackgroundLinearYGradient::new([0.05, 0.02, 0.04], [0.1, 0.06, 0.06]);
-    let shader = shader::NormalShader::new(Box::new(bg_shader));
+    //let shader = shader::NormalShader::new(Box::new(bg_shader));
+    let shader = shader::PhongShader::new(Box::new(bg_shader));
     //let shader = shader::FractalShader::new(f64v!([0.1, 0.1, 0.4]), f64v!([0.2, 0.9, 0.8]), f64!(30.0), [f64!(0.0), f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
     let sampler = sampler::JitterSampler::new(0.5);
-    let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
+    let mut lights = Vec::<Box<dyn light::Light>>::new();
+    lights.push(Box::new(light::DirectionalLight::new(f64v!(vecmath::vec3_normalized([-0.5, 0.3, -1.0])), f64v!([1.0, 0.2, 0.2]), f64!(1.5))));
+    lights.push(Box::new(light::PointLight::new(f64v!([0.0, 2.2, 1.0]), f64v!([0.2, 1.0, 0.2]), f64!(100.0))));
 
-    let t = 0.0;
+    let mut renderer= renderers::LightRenderer::new(camera, film, solver, shader, sampler, lights, f64v!([0.01, 0.01, 0.01]));
+    //let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
+    //let mut renderer= renderers::CameraRayRenderer::new(camera, film);
 
-    evaluator::evaluate(t);
-    renderer.prepare_render();
-    renderer.evaluate(t);
-    renderer.render();
+    for i in frames{
+        let t = i as f64 / configuration::ups;
 
-    let path = "result.png";
-    renderer.save_image(&path);
+        evaluator::evaluate(t);
+        renderer.prepare_render();
+        renderer.evaluate(t);
+        renderer.render();
+
+        let path = if file_name == "" {format!("results/{}.png", i)} else{format!("results/{}.png", file_name)};
+        
+        renderer.save_image(&path);
+    }
 }
 
 fn render_code(){
@@ -219,7 +345,7 @@ fn render_code(){
 
         for current_frame in frames{
             let handle = thread::spawn(|| {
-                render_frames(current_frame, "");
+                render_frames_code(current_frame, "");
             });
             handles.push(handle);
         }
@@ -241,7 +367,7 @@ fn render_code(){
     }
 }
 
-fn render_frames(frames: Vec<u32>, file_name: &str){
+fn render_frames_code(frames: Vec<u32>, file_name: &str){
     let camera_pos_z_ref = f64!(2.6);
     evaluator::InterpolatorEvaluator::new(2.6, 2.2, 3.0, true, Box::new(transition::Smoothstep::new(2.0)), camera_pos_z_ref.clone());
     let camera = cameras:: PinholeCamera::new(
@@ -307,7 +433,6 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
     let shader_rot_z = f64!(-45.0);
     evaluator::InterpolatorEvaluator::new(-45.0, 90.0, 3.0, true, Box::new(transition::Linear::new()),shader_rot_z.clone());
     let shader = shader::FractalShader::new(f64v!([0.1, 0.1, 0.4]), f64v!([0.2, 0.9, 0.8]), f64!(30.0), [shader_rot_z, f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
-    // let mut renderer= renderers::CameraRayRenderer::new(camera, film);
     let sampler = sampler::JitterSampler::new(0.5);
     //let mut renderer= renderers::CameraRayRenderer::new(camera, film);
     let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
