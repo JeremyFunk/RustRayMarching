@@ -1,12 +1,12 @@
 use std::fs;
 use serde::Deserialize;
-use crate::evaluator::{self, Evaluator};
+use crate::{evaluator::{self, Evaluator}, configuration};
 use std::{rc::Rc, cell::RefCell};
 
 #[derive(Debug, Deserialize, Copy, Clone)]
 #[serde()]
 pub struct JsonAnimationKeyframe{
-    pub frame: i32,
+    pub frame: u32,
     pub value: f64,
 }
 
@@ -114,17 +114,17 @@ fn convert_animated_float(f: JsonAnimationFloat) -> f64!(){
             if p.len() == 1 {
                 return f64!(p[0].value);
             }else{
-                let mut b: Vec<evaluator::CombineEvaluatorInfo> = Vec::new();
+                let mut b: Vec<evaluator::Keyframe> = Vec::new();
                 let f_type = f64!(p[0].value);
-                for n in 0..(p.len()-1) {
-                    let combine = evaluator::CombineEvaluatorInfo::new(
-                        p[n].frame.into(), 
-                        p[n + 1].frame.into(), 
-                        Box::new(evaluator::FloatEvaluator::new_get(p[n].value))
+                for n in p {
+                    let frame: f64 = n.frame.into();
+                    let combine = evaluator::Keyframe::new(
+                        frame / configuration::ups,
+                        n.value
                     );
                     b.push(combine);
                 }
-                evaluator::CombineEvaluator::new(b, f_type.clone());
+                evaluator::KeyframeEvaluator::new(b, f_type.clone());
                 return f_type;
             }
         },
@@ -143,8 +143,9 @@ fn convert_offset(f: JsonAnimationFloat, add: f64, mul: f64) -> f64!(){
                 let mut b: Vec<evaluator::Keyframe> = Vec::new();
                 let f_type = f64!((p[0].value + add) * mul);
                 for n in p {
+                    let frame: f64 = n.frame.into();
                     let combine = evaluator::Keyframe::new(
-                        n.frame.into(),
+                        frame / configuration::ups,
                         (n.value + add) * mul
                     );
                     b.push(combine);

@@ -29,7 +29,6 @@ impl Camera for PinholeCamera{
         return (helpers::mat_dir_mul3(self.mat_inv, dir), [self.pos_f64[0], self.pos_f64[1],self.pos_f64[2]]);
     }
     fn evaluate(&mut self, t: f64){
-        println!("{:?}", get_f64v!(self.rot));
         self.pos_f64 = [
             get_ref_f64!(self.pos[0]),
             get_ref_f64!(self.pos[1]),

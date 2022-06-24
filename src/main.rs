@@ -301,7 +301,8 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
         [scene.camera.cam_pos[0].to_owned(), scene.camera.cam_pos[1].to_owned(), scene.camera.cam_pos[2].to_owned()],
         [scene.camera.cam_py[0].to_owned(), scene.camera.cam_py[1].to_owned(), f64!(0.0)]
     );
-    let film = film::BasicFilm::new(vec![], vec![]);
+    let noise = postprocessor::NoisePostProcessor::new(f64!(0.02), f64!(0.01));
+    let film = film::BasicFilm::new(vec![], vec![Box::new(noise)]);
     let solver = solver::GeneralSolver::new(primitives);
     let bg_shader = shader::BackgroundLinearYGradient::new([0.05, 0.02, 0.04], [0.1, 0.06, 0.06]);
     //let shader = shader::NormalShader::new(Box::new(bg_shader));
@@ -309,8 +310,8 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
     //let shader = shader::FractalShader::new(f64v!([0.1, 0.1, 0.4]), f64v!([0.2, 0.9, 0.8]), f64!(30.0), [f64!(0.0), f64!(-45.0), f64!(-45.0)], Box::new(bg_shader));
     let sampler = sampler::JitterSampler::new(0.5);
     let mut lights = Vec::<Box<dyn light::Light>>::new();
-    lights.push(Box::new(light::DirectionalLight::new(f64v!(vecmath::vec3_normalized([-0.5, 0.3, -1.0])), f64v!([1.0, 0.2, 0.2]), f64!(1.5))));
-    lights.push(Box::new(light::PointLight::new(f64v!([0.0, 2.2, 1.0]), f64v!([0.2, 1.0, 0.2]), f64!(100.0))));
+    lights.push(Box::new(light::DirectionalLight::new(f64v!(vecmath::vec3_normalized([-0.5, 0.3, -1.0])), f64v!([1.0, 0.2, 0.2]), f64!(2.5))));
+    lights.push(Box::new(light::PointLight::new(f64v!([0.0, 2.2, 1.0]), f64v!([0.2, 1.0, 0.2]), f64!(200.0))));
 
     let mut renderer= renderers::LightRenderer::new(camera, film, solver, shader, sampler, lights, f64v!([0.01, 0.01, 0.01]));
     //let mut renderer= renderers::SolverRenderer::new(camera, film, solver, shader, sampler);
@@ -326,6 +327,8 @@ fn render_frames(frames: Vec<u32>, file_name: &str){
 
         let path = if file_name == "" {format!("results/{}.png", i)} else{format!("results/{}.png", file_name)};
         
+        println!("{:?}", i);
+
         renderer.save_image(&path);
     }
 }
