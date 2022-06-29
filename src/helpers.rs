@@ -230,7 +230,17 @@ pub fn reflect(indicent: [f64;3], normal: [f64;3]) -> [f64;3] {
 
 
 
-
+pub fn im_bezier_cubic_calc(x1: f64, y1: f64, x2: f64, y2: f64, x3: f64, y3: f64, x4: f64, y4: f64, t: f64) -> [f64;2]{
+    let u = 1.0 - t;
+    let w1 = u * u * u;
+    let w2 = 3.0 * u * u * t;
+    let w3 = 3.0 * u * t * t;
+    let w4 = t * t * t;
+    return [
+        w1 * x1 + w2 * x2 + w3 * x3 + w4 * x4,
+        w1 * y1 + w2 * y2 + w3 * y3 + w4 * y4
+    ]
+}
 
 
 

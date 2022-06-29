@@ -8,6 +8,10 @@ use std::{rc::Rc, cell::RefCell};
 pub struct JsonAnimationKeyframe{
     pub frame: u32,
     pub value: f64,
+    pub inter_x_in: f64,
+    pub inter_x_out: f64,
+    pub inter_y_in: f64,
+    pub inter_y_out: f64,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -120,7 +124,8 @@ fn convert_animated_float(f: JsonAnimationFloat) -> f64!(){
                     let frame: f64 = n.frame.into();
                     let combine = evaluator::Keyframe::new(
                         frame / configuration::ups,
-                        n.value
+                        n.value,
+                        n.inter_x_in, n.inter_x_out, n.inter_y_in, n.inter_y_out
                     );
                     b.push(combine);
                 }
@@ -146,7 +151,8 @@ fn convert_offset(f: JsonAnimationFloat, add: f64, mul: f64) -> f64!(){
                     let frame: f64 = n.frame.into();
                     let combine = evaluator::Keyframe::new(
                         frame / configuration::ups,
-                        (n.value + add) * mul
+                        (n.value + add) * mul,
+                        n.inter_x_in, n.inter_x_out, n.inter_y_in, n.inter_y_out
                     );
                     b.push(combine);
                 }

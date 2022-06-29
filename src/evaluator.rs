@@ -1,6 +1,7 @@
 use std::{rc::Rc, cell::RefCell};
 use std::sync::Mutex;
 use crate::transition;
+use crate::helpers;
 thread_local! {
     #[allow(non_upper_case_globals)]
     static manager: Mutex<EvaluatorManager> = Mutex::new(EvaluatorManager{evaluators: Vec::new()});
@@ -70,12 +71,16 @@ pub fn convert_to_evaluator(a: [f64;3], pointer: f64v!()){
 
 pub struct Keyframe{
     pub frame: f64,
-    pub value: f64
+    pub value: f64,
+    pub inter_x_in: f64,
+    pub inter_x_out: f64,
+    pub inter_y_in: f64,
+    pub inter_y_out: f64,
 }
 
 impl Keyframe{
-    pub fn new(frame: f64, value: f64) -> Keyframe{
-        Keyframe { frame: frame, value: value }
+    pub fn new(frame: f64, value: f64, inter_x_in: f64, inter_x_out: f64, inter_y_in: f64, inter_y_out: f64) -> Keyframe{
+        Keyframe { frame: frame, value: value, inter_x_in: inter_x_in, inter_x_out: inter_x_out, inter_y_in: inter_y_in, inter_y_out: inter_y_out }
     }
 }
 
@@ -83,7 +88,9 @@ pub struct KeyframeEvaluator{
     keyframes: Vec<Keyframe>,
 }
 
+
 impl Evaluator for KeyframeEvaluator{
+
     fn evaluate(&self, t: f64) -> f64{
         for (i, k) in self.keyframes.iter().enumerate(){
             if t < k.frame {
@@ -92,9 +99,11 @@ impl Evaluator for KeyframeEvaluator{
                 }else{
                     let low = &self.keyframes[i-1];
 
-                    let f = (t - low.frame) / (k.frame - low.frame);
-
-                    return low.value * (1.0 - f) + k.value * f;
+                    let f_diff = (k.frame - low.frame);
+                    let f = (t - low.frame) / f_diff;
+                    let res = helpers::im_bezier_cubic_calc(0.0, low.value, low.inter_x_out / f_diff, low.value + low.inter_y_out, 1.0 + k.inter_x_in / f_diff, k.value + k.inter_y_in, 1.0, k.value, f);
+                    //return low.value * (1.0 - f) + k.value * f;
+                    return res[1];
                 }
             }
         }
