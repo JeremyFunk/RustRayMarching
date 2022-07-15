@@ -1,1 +1,136 @@
-{"camera":{"cam_pos":[{"keyframes":[{"frame":0,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":-2.4448580741882324},{"frame":142,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":-0.445923775434494}],"value":-2.4448580741882324},{"keyframes":[{"frame":0,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":2.149937152862549},{"frame":142,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":1.8421673774719238}],"value":2.149937152862549},{"keyframes":[{"frame":0,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":3.5027365684509277},{"frame":142,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":4.764459133148193}],"value":3.5027365684509277}],"cam_py":[{"keyframes":[{"frame":0,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":28.0},{"frame":142,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":26.0}],"value":28.0},{"keyframes":[{"frame":0,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":-48.5},{"frame":142,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":-77.0}],"value":-48.5}]},"group_modifiers":[{"modifier":4,"prim0":0,"prim1":1,"prim2":-1,"prim3":-1,"prim_attribute":{"value":0.9399999976158142}}],"objects":[{"modifiers":[],"name":"Cube","position":[{"value":1.0},{"value":0.0},{"value":0.0}],"prim_type":3,"rotation":[{"value":0.0},{"value":0.0},{"value":0.0}],"scale":[{"value":1.0},{"value":1.0},{"value":1.0}],"values":[{"value":1.0},{"value":1.0},{"value":1.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0}]},{"modifiers":[],"name":"Sphere","position":[{"keyframes":[{"frame":0,"inter_x_in":0.0,"inter_x_out":0.0,"inter_y_in":0.0,"inter_y_out":0.0,"value":-1.659999966621399},{"frame":15,"inter_x_in":0.0,"inter_x_out":13.0,"inter_y_in":0.0,"inter_y_out":0.023647796362638474,"value":-1.659999966621399},{"frame":28,"inter_x_in":-7.823725700378418,"inter_x_out":12.609042167663574,"inter_y_in":-0.5448846817016602,"inter_y_out":1.0001046657562256,"value":-0.25},{"frame":48,"inter_x_in":-8.576486587524414,"inter_x_out":8.527666091918945,"inter_y_in":0.0397740975022316,"inter_y_out":-0.03993791714310646,"value":1.909999966621399},{"frame":69,"inter_x_in":-16.14520835876465,"inter_x_out":8.914124488830566,"inter_y_in":0.22426143288612366,"inter_y_out":-0.11890990287065506,"value":0.8799999952316284},{"frame":97,"inter_x_in":-7.723703861236572,"inter_x_out":18.788698196411133,"inter_y_in":0.1241331547498703,"inter_y_out":-0.3049476146697998,"value":1.350000023841858},{"frame":142,"inter_x_in":-25.157060623168945,"inter_x_out":0.0,"inter_y_in":-0.004926631227135658,"inter_y_out":0.0,"value":1.1200000047683716}],"value":-1.659999966621399},{"value":0.0},{"value":0.0}],"prim_type":1,"rotation":[{"value":0.0},{"value":0.0},{"value":0.0}],"scale":[{"value":1.0},{"value":1.0},{"value":1.0}],"values":[{"value":1.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0},{"value":0.0}]}]}
+{
+    "camera": {
+        "cam_pos": [
+            {
+                "keyframes": [
+                    {
+                        "frame": 0,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": -1.4448580741882324
+                    },
+                    {
+                        "frame": 142,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": -1.4448580741882324
+                    }
+                ],
+                "value": -2.4448580741882324
+            },
+            {
+                "keyframes": [
+                    {
+                        "frame": 0,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": 1.149937152862549
+                    },
+                    {
+                        "frame": 142,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": 1.149937152862549
+                    }
+                ],
+                "value": 2.149937152862549
+            },
+            {
+                "keyframes": [
+                    {
+                        "frame": 0,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": 2.5027365684509277
+                    },
+                    {
+                        "frame": 142,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": 2.5027365684509277
+                    }
+                ],
+                "value": 3.5027365684509277
+            }
+        ],
+        "cam_py": [
+            {
+                "keyframes": [
+                    {
+                        "frame": 0,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": 18.0
+                    },
+                    {
+                        "frame": 142,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": 26.0
+                    }
+                ],
+                "value": 28.0
+            },
+            {
+                "keyframes": [
+                    {
+                        "frame": 0,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": -38.5
+                    },
+                    {
+                        "frame": 142,
+                        "inter_x_in": 0.0,
+                        "inter_x_out": 0.0,
+                        "inter_y_in": 0.0,
+                        "inter_y_out": 0.0,
+                        "value": -77.0
+                    }
+                ],
+                "value": -48.5
+            }
+        ]
+    },
+    "group_modifiers": [],
+    "objects": [
+        {
+            "modifiers": [],
+            "name": "Cube",
+            "position": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
+            "prim_type": 5,
+            "rotation": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
+            "scale": [{ "value": 1.0 }, { "value": 1.0 }, { "value": 1.0 }],
+            "values": [
+                { "value": 0.094912 },
+                { "value": -0.326666 },
+                { "value": 0.07648 },
+                { "value": 0.20401 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 }
+            ]
+        }
+    ]
+}

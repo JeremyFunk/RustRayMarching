@@ -152,7 +152,7 @@ pub struct LightRenderer<C: cameras::Camera, F: film::Film, S: solver::Solver, H
 impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A: Sampler> Renderer for LightRenderer<C, F, S, H, A>{
     fn render(&mut self){
         if !self.shader.is_lit() {
-            panic!("Light Renderer does only support lit shaders!");
+            panic!("Light Renderer does only support lit shaders!"); 
         }
 
         let sample_inv = 1.0 / ((configuration::samples * configuration::samples) as f64);
@@ -163,15 +163,23 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A:
                     // let ray = self.camera.generate_ray(x as f64, y as f64);
                     let i = self.solver.solve(ray);
                     
-                    if(!i.hit){
+                    if !i.hit {
                         let col = self.shader.miss_color(x, y, i);
                         self.film.write_pixel(x, y, [col[0] * sample_inv, col[1] * sample_inv, col[2] * sample_inv]);
                     }else{
                         let surface = self.shader.surface_props(x, y, &i);
                         for l in &self.lights{
                             let light_info = l.illuminate(i.position);
-                            let shadow_ray = (light_info.direction, [i.position[0] + i.normal[0] * configuration::light_min_dist, i.position[1] + i.normal[1] * configuration::light_min_dist, i.position[2] + i.normal[2] * configuration::light_min_dist]);
-                            let i_simple = self.solver.solve_simple(shadow_ray, light_info.distance);
+                            let mut shadow_ray = (light_info.direction, [i.position[0] + i.normal[0] * configuration::small_step, i.position[1] + i.normal[1] * configuration::small_step, i.position[2] + i.normal[2] * configuration::small_step]);
+                            let mut i_simple = self.solver.solve(shadow_ray);
+                            if(i_simple.steps <= 1){
+                                let mut iterations = 1.0;
+                                while i_simple.steps <= 1 && iterations <= 5.0 {
+                                    shadow_ray = (light_info.direction, [shadow_ray.1[0] - i.normal[0] * i_simple.dist + i.normal[0] * configuration::small_step * iterations, shadow_ray.1[1] - i.normal[1] * i_simple.dist + i.normal[1] * configuration::small_step * iterations, shadow_ray.1[2] - i.normal[2] * i_simple.dist + i.normal[2] * configuration::small_step]);
+                                    i_simple = self.solver.solve(shadow_ray);
+                                    iterations += 0.5;
+                                }
+                            }
                             if !i_simple.hit {
                                 let falloff = i.material.albedo * max_f64(0.0, vecmath::vec3_dot(i.normal, light_info.direction));
                                 let diffuse = [light_info.light_intensity[0] * surface.color[0] * falloff * sample_inv * i.material.diffuse, light_info.light_intensity[1] * surface.color[1] * falloff * sample_inv * i.material.diffuse, light_info.light_intensity[2] * surface.color[2] * falloff * sample_inv * i.material.diffuse];
@@ -179,7 +187,7 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A:
                                 let light_dir_inv = [-light_info.direction[0], -light_info.direction[1], -light_info.direction[2]];
 
                                 let r =  sample_inv * helpers::max_f64(helpers::dot_product(helpers::reflect(light_dir_inv, i.normal), light_info.direction), 0.0).powf(i.material.n_specular);
-                                //println!("{:?}", r);
+                                
                                 let specular = [light_info.light_intensity[0] * r * i.material.specular, light_info.light_intensity[1] * r * i.material.specular, light_info.light_intensity[2] * r * i.material.specular];
                                 self.film.write_pixel(x, y, [diffuse[0] + specular[0], diffuse[1] + specular[1], diffuse[2] + specular[2]]);
                             }else{

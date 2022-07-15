@@ -20,8 +20,8 @@ pub struct PinholeCamera{
 
 impl Camera for PinholeCamera{
     fn generate_ray(&self, x: f64, y: f64, sample: CameraSample) -> crate::Ray{
-        let rx = ((x / configuration::width_f - 0.5) * configuration::width_f) / configuration::height_f;
-        let ry = (1.0 - y / configuration::height_f) - 0.5;
+        let rx = (((x + sample.0.0) / configuration::width_f - 0.5) * configuration::width_f) / configuration::height_f;
+        let ry = (1.0 - (y + sample.0.1) / configuration::height_f) - 0.5;
         
         //let rx = (2.0 * (x + 0.5) / configuration::width_f - 1.0) * self.ar * self.scale;
         //let ry = (1.0 - 2.0 * (y + 0.5) / configuration::height_f) * self.scale;

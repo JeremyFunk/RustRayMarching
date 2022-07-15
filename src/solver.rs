@@ -7,7 +7,7 @@ pub struct IntersectionInfo{
     pub hit: bool,
     pub dist: f64,
     pub steps: u32,
-    pub fractal_data: [f64;3],
+    pub fractal_data: [f64;4],
     pub normal: [f64;3],
     pub position: [f64;3],
     pub material: MaterialRaw
@@ -24,7 +24,7 @@ pub struct SufraceProperties{
 struct Solve{
     hit: bool,
     dist: f64,
-    fractal_data: [f64;3],
+    fractal_data: [f64;4],
     steps: u32,
     pos: [f64;3],
     material: MaterialRaw
@@ -54,7 +54,7 @@ impl GeneralSolver{
     }
 
     fn _map_world(&self, pos: [f64;3]) -> primitive::PrimitiveResult{
-        let mut prim = primitive::PrimitiveResult { distance: f64::MAX, fractal_data: [0.0, 0.0, 0.0], material: self.default_material };
+        let mut prim = primitive::PrimitiveResult { distance: f64::MAX, fractal_data: [0.0, 0.0, 0.0, 0.0], material: self.default_material };
         for p in &self.primitives{
             let dist = p.map_primitive(pos);
             if dist.distance < prim.distance{
@@ -67,18 +67,21 @@ impl GeneralSolver{
     fn _solve_world(&self, pos: [f64;3], dir: [f64;3]) -> Solve{
         let mut mapped_pos = [pos[0], pos[1], pos[2]];
         let mut total_dist = 0.0;
+        let mut dist = self._map_world(mapped_pos);
         for i in 0..configuration::step_number{
-            let dist = self._map_world(mapped_pos);
-            if dist.distance < configuration::min_dist {
-                return Solve{hit: true, dist: total_dist, fractal_data: dist.fractal_data, steps: i, pos: mapped_pos, material: dist.material}
-            }
-            if dist.distance > configuration::max_dist {
-                return Solve{hit: false, dist: total_dist, fractal_data: dist.fractal_data, steps: i, pos: mapped_pos, material: dist.material}
-            }
             total_dist += dist.distance;
+            // let new_dist = if i == 0 { dist } else {self._map_world(mapped_pos)};
+            let new_dist = self._map_world(mapped_pos);
+            if new_dist.distance < configuration::min_dist {
+                return Solve{hit: true, dist: total_dist, fractal_data: dist.fractal_data, steps: i, pos: mapped_pos, material: dist.material }
+            }
+            if new_dist.distance > configuration::max_dist {
+                return Solve{hit: false, dist: total_dist, fractal_data: dist.fractal_data, steps: i, pos: mapped_pos, material: dist.material }
+            }
+            dist = new_dist;
             mapped_pos = [mapped_pos[0] + dir[0] * dist.distance, mapped_pos[1] + dir[1] * dist.distance, mapped_pos[2] + dir[2] * dist.distance]
         }
-        return Solve{hit: false, dist: total_dist, fractal_data: [0.0, 0.0, 0.0], steps: configuration::step_number, pos: mapped_pos, material: self.default_material }
+        return Solve{hit: false, dist: total_dist, fractal_data: [0.0, 0.0, 0.0, 0.0], steps: configuration::step_number, pos: mapped_pos, material: self.default_material }
     }
     
     fn _solve_world_simple(&self, pos: [f64;3], dir: [f64;3], max_dist: f64) -> SolveSimple{
@@ -103,12 +106,14 @@ impl Solver for GeneralSolver{
     fn solve(&self, ray: crate::Ray) -> IntersectionInfo{
         let res = self._solve_world(ray.1, ray.0);
         let normal = self._calculate_normal(res.pos);
-        return IntersectionInfo{dist: res.dist, hit: res.hit, fractal_data: res.fractal_data, normal: normal, position: res.pos, steps: res.steps, material: res.material}
+        return IntersectionInfo{dist: res.dist, hit: res.hit, fractal_data: res.fractal_data, normal: normal, position: res.pos, steps: res.steps, material: res.material }
     }
+
     fn solve_simple(&self, ray: crate::Ray, max_dist: f64) -> IntersectionInfoSimple{
         let res = self._solve_world_simple(ray.1, ray.0, max_dist);
         return IntersectionInfoSimple { hit: res.hit, dist: res.dist }
     }
+
     fn evaluate(&mut self, t: f64){
         for p in &mut self.primitives{
            p.evaluate(t);

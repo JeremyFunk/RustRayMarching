@@ -14,10 +14,11 @@ pub const small_step: f64 = 0.001;
 pub const num_group_modifiers: usize = 4;
 pub const fps: u32 = 30;
 pub const ups: f64 = 30.0;
-pub const still_frame: u32 = 45;
-pub const end_frame: u32 = ups as u32 * 5;
+pub const still_frame: u32 = 2;
+pub const end_frame: u32 = ups as u32 * 4;
 pub const start_frame: u32 = 0;
-pub const threads: u32 = 16;
-pub const samples: u32 = 2;
+pub const threads: u32 = 23;
+pub const samples: u32 = 1;
+
 pub const render_scene: bool = true;
 pub const video: bool = true;

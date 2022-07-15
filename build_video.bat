@@ -1,1 +1,1 @@
-ffmpeg -r 24 -i results/%%01d.png  -vcodec mpeg4 -q:v 1 -y results/movie.mp4
+ffmpeg -r 30 -i results/%%01d.png  -vcodec mpeg4 -q:v 1 -y results/movie.mp4
