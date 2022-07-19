@@ -163,20 +163,23 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A:
                     // let ray = self.camera.generate_ray(x as f64, y as f64);
                     let i = self.solver.solve(ray);
                     
+                    let mut volumetric = [i.path_light[0] / f64::from(i.steps) * 0.05, i.path_light[1] / f64::from(i.steps) * 0.05, i.path_light[2] / f64::from(i.steps) * 0.05];
+                    
+
                     if !i.hit {
-                        let col = self.shader.miss_color(x, y, i);
-                        self.film.write_pixel(x, y, [col[0] * sample_inv, col[1] * sample_inv, col[2] * sample_inv]);
+                        //let col = self.shader.miss_color(x, y, i);
+                        self.film.write_pixel(x, y, [volumetric[0] * sample_inv, volumetric[1] * sample_inv, volumetric[2] * sample_inv]);
                     }else{
                         let surface = self.shader.surface_props(x, y, &i);
                         for l in &self.lights{
                             let light_info = l.illuminate(i.position);
                             let mut shadow_ray = (light_info.direction, [i.position[0] + i.normal[0] * configuration::small_step, i.position[1] + i.normal[1] * configuration::small_step, i.position[2] + i.normal[2] * configuration::small_step]);
-                            let mut i_simple = self.solver.solve(shadow_ray);
-                            if(i_simple.steps <= 1){
+                            let mut i_simple = self.solver.solve_simple(shadow_ray, light_info.distance);
+                            if i_simple.steps <= 1 {
                                 let mut iterations = 1.0;
                                 while i_simple.steps <= 1 && iterations <= 5.0 {
                                     shadow_ray = (light_info.direction, [shadow_ray.1[0] - i.normal[0] * i_simple.dist + i.normal[0] * configuration::small_step * iterations, shadow_ray.1[1] - i.normal[1] * i_simple.dist + i.normal[1] * configuration::small_step * iterations, shadow_ray.1[2] - i.normal[2] * i_simple.dist + i.normal[2] * configuration::small_step]);
-                                    i_simple = self.solver.solve(shadow_ray);
+                                    i_simple = self.solver.solve_simple(shadow_ray, light_info.distance + 1.0);
                                     iterations += 0.5;
                                 }
                             }

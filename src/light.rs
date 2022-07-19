@@ -12,7 +12,6 @@ pub trait Light{
 }
 
 
-
 pub struct DirectionalLight {
     direction: [f64!();3],
     color: [f64!();3],

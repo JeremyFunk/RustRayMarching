@@ -1,9 +1,9 @@
 #![allow(non_upper_case_globals)]
 
-pub const width: u32 = 1920;
-pub const height: u32 = 1080;
-pub const width_f: f64 = 1920.0;
-pub const height_f: f64 = 1080.0;
+pub const width: u32 = 720;
+pub const height: u32 = 480;
+pub const width_f: f64 = 720.0;
+pub const height_f: f64 = 480.0;
 pub const fov: f64 = 90.0;
 pub const step_number: u32 = 256;
 pub const light_step_number: u32 = 256;

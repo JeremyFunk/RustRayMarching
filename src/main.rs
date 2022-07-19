@@ -446,9 +446,23 @@ fn render_frames(frames: Vec<u32>, file_name: &str) {
             f64!(0.0),
         ],
     );
+
+    let mut lights = Vec::<Box<dyn light::Light>>::new();
+    let mut lights_solver = Vec::<Box<dyn light::Light>>::new();
+    lights.push(Box::new(light::DirectionalLight::new(
+        f64v!(vecmath::vec3_normalized([-0.5, 0.3, 1.0])),
+        f64v!([1.0, 0.2, 0.2]),
+        f64!(2.5),
+    )));
+    lights_solver.push(Box::new(light::DirectionalLight::new(
+        f64v!(vecmath::vec3_normalized([-0.5, 0.3, 1.0])),
+        f64v!([1.0, 0.2, 0.2]),
+        f64!(2.5),
+    )));
+
     let noise = postprocessor::NoisePostProcessor::new(f64!(0.02), f64!(0.01));
     let film = film::BasicFilm::new(vec![], vec![Box::new(noise)]);
-    let solver = solver::GeneralSolver::new(primitives);
+    let solver = solver::VolumetricSolver::new(primitives, lights_solver);
     let bg_shader = shader::BackgroundLinearYGradient::new([0.05, 0.02, 0.04], [0.1, 0.06, 0.06]);
     // let shader = shader::NormalShader::new(Box::new(bg_shader));
     let shader = shader::PhongShader::new(Box::new(bg_shader));
@@ -460,17 +474,6 @@ fn render_frames(frames: Vec<u32>, file_name: &str) {
     //     Box::new(bg_shader),
     // );
     let sampler = sampler::JitterSampler::new(0.5);
-    let mut lights = Vec::<Box<dyn light::Light>>::new();
-    lights.push(Box::new(light::DirectionalLight::new(
-        f64v!(vecmath::vec3_normalized([-0.5, 0.3, -1.0])),
-        f64v!([1.0, 0.2, 0.2]),
-        f64!(2.5),
-    )));
-    lights.push(Box::new(light::PointLight::new(
-        f64v!([0.0, 2.2, 2.5]),
-        f64v!([0.2, 1.0, 0.2]),
-        f64!(200.0),
-    )));
 
     let mut renderer = renderers::LightRenderer::new(
         camera,
