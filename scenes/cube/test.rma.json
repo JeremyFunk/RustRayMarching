@@ -1,0 +1,49 @@
+{
+    "camera": {
+        "cam_pos": [
+            { "mode": 0, "value": -2.826733112335205 },
+            { "mode": 0, "value": 2.421875 },
+            { "mode": 0, "value": 4.0994133949279785 }
+        ],
+        "cam_py": [
+            { "mode": 0, "value": 33.0 },
+            { "mode": 0, "value": -58.5 }
+        ]
+    },
+    "globals": [],
+    "group_modifiers": [],
+    "objects": [
+        {
+            "modifiers": [],
+            "name": "Cube",
+            "position": [
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 }
+            ],
+            "prim_type": 3,
+            "rotation": [
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 }
+            ],
+            "scale": [
+                { "mode": 0, "value": 1.0 },
+                { "mode": 0, "value": 1.0 },
+                { "mode": 0, "value": 1.0 }
+            ],
+            "values": [
+                { "mode": 0, "value": 1.0 },
+                { "mode": 0, "value": 1.0 },
+                { "mode": 0, "value": 1.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 }
+            ]
+        }
+    ]
+}

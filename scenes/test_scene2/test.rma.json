@@ -1,0 +1,199 @@
+{
+    "camera": {
+        "cam_pos": [
+            { "mode": 0, "value": 0.0 },
+            { "mode": 0, "value": 10.0 },
+            { "mode": 0, "value": 0.0 }
+        ],
+        "cam_py": [
+            { "mode": 0, "value": 89.0 },
+            { "mode": 0, "value": 33.0 }
+        ]
+    },
+    "globals": [
+        {
+            "f": {
+                "mode": 1,
+                "script": "OrbitSpeed",
+                "value": 9.670000076293945
+            },
+            "name": "orbitSpeed"
+        },
+        {
+            "f": { "mode": 1, "script": "OrbitRad", "value": -0.0625 },
+            "name": "orbitRadius"
+        },
+        {
+            "f": {
+                "mode": 1,
+                "script": "inOrbitRadius",
+                "value": 0.30000001192092896
+            },
+            "name": "inOrbitRadius"
+        },
+        { "f": { "mode": 0, "value": 1.0 }, "name": "inOrbitSpeed" }
+    ],
+    "group_modifiers": [
+        {
+            "modifier": 4,
+            "prim0": 0,
+            "prim1": 1,
+            "prim2": -1,
+            "prim3": -1,
+            "prim_attribute": { "mode": 0, "value": 1.1100000143051147 }
+        }
+    ],
+    "objects": [
+        {
+            "modifiers": [],
+            "name": "Sphere",
+            "position": [
+                { "mode": 1, "script": "XOrbit", "value": -0.0371340848505497 },
+                { "mode": 1, "value": 0.0 },
+                { "mode": 1, "script": "YOrbit", "value": 0.05027235671877861 }
+            ],
+            "prim_type": 1,
+            "rotation": [
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 }
+            ],
+            "scale": [
+                { "mode": 0, "value": 0.800000011920929 },
+                { "mode": 0, "value": 0.800000011920929 },
+                { "mode": 0, "value": 0.800000011920929 }
+            ],
+            "values": [
+                { "mode": 0, "value": 1.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 }
+            ]
+        },
+        {
+            "modifiers": [],
+            "name": "Sphere",
+            "position": [
+                { "mode": 1, "script": "InX", "value": 0.017824361100792885 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 1, "script": "InZ", "value": -0.02413073182106018 }
+            ],
+            "prim_type": 1,
+            "rotation": [
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 }
+            ],
+            "scale": [
+                {
+                    "keyframes": [
+                        {
+                            "frame": 30,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.0
+                        },
+                        {
+                            "frame": 245,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.0
+                        },
+                        {
+                            "frame": 275,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.2000000476837158
+                        }
+                    ],
+                    "mode": 0,
+                    "value": 1.185185194015503
+                },
+                {
+                    "keyframes": [
+                        {
+                            "frame": 30,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.0
+                        },
+                        {
+                            "frame": 245,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.0
+                        },
+                        {
+                            "frame": 275,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.2000000476837158
+                        }
+                    ],
+                    "mode": 0,
+                    "value": 1.185185194015503
+                },
+                {
+                    "keyframes": [
+                        {
+                            "frame": 30,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.0
+                        },
+                        {
+                            "frame": 245,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.0
+                        },
+                        {
+                            "frame": 275,
+                            "inter_x_in": 0.0,
+                            "inter_x_out": 0.0,
+                            "inter_y_in": 0.0,
+                            "inter_y_out": 0.0,
+                            "value": 1.2000000476837158
+                        }
+                    ],
+                    "mode": 0,
+                    "value": 1.185185194015503
+                }
+            ],
+            "values": [
+                { "mode": 0, "value": 1.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 },
+                { "mode": 0, "value": 0.0 }
+            ]
+        }
+    ]
+}

@@ -111,14 +111,6 @@
         ]
     },
     "group_modifiers": [
-        {
-            "modifier": 4,
-            "prim0": 0,
-            "prim1": 1,
-            "prim2": -1,
-            "prim3": -1,
-            "prim_attribute": { "value": 0.6800000071525574 }
-        }
     ],
     "objects": [
         {
@@ -132,103 +124,6 @@
                 { "value": 1.0 },
                 { "value": 1.0 },
                 { "value": 1.0 },
-                { "value": 0.0 },
-                { "value": 0.0 },
-                { "value": 0.0 },
-                { "value": 0.0 },
-                { "value": 0.0 },
-                { "value": 0.0 },
-                { "value": 0.0 }
-            ]
-        },
-        {
-            "modifiers": [
-                {
-                    "attribute0": { "value": 0.0 },
-                    "attribute1": { "value": 0.0 },
-                    "attribute2": { "value": 0.0 },
-                    "attribute3": { "value": 0.6000000238418579 },
-                    "attribute4": {
-                        "keyframes": [
-                            {
-                                "frame": 0,
-                                "inter_x_in": 0.0,
-                                "inter_x_out": 0.0,
-                                "inter_y_in": 0.0,
-                                "inter_y_out": 0.0,
-                                "value": 1.0
-                            },
-                            {
-                                "frame": 15,
-                                "inter_x_in": 0.0,
-                                "inter_x_out": 0.0,
-                                "inter_y_in": 0.0,
-                                "inter_y_out": 0.0,
-                                "value": 1.5499999523162842
-                            },
-                            {
-                                "frame": 40,
-                                "inter_x_in": 0.0,
-                                "inter_x_out": 0.0,
-                                "inter_y_in": 0.0,
-                                "inter_y_out": 0.0,
-                                "value": 0.550000011920929
-                            },
-                            {
-                                "frame": 106,
-                                "inter_x_in": 0.0,
-                                "inter_x_out": 0.0,
-                                "inter_y_in": 0.0,
-                                "inter_y_out": 0.0,
-                                "value": 0.6299999952316284
-                            }
-                        ],
-                        "value": 0.6299999952316284
-                    },
-                    "modifier": 1
-                }
-            ],
-            "name": "Sphere",
-            "position": [
-                {
-                    "keyframes": [
-                        {
-                            "frame": 0,
-                            "inter_x_in": 0.0,
-                            "inter_x_out": 33.654823303222656,
-                            "inter_y_in": 0.0,
-                            "inter_y_out": -0.5955585241317749,
-                            "value": -2.5
-                        },
-                        {
-                            "frame": 52,
-                            "inter_x_in": -21.438032150268555,
-                            "inter_x_out": 19.459022521972656,
-                            "inter_y_in": -0.9393584132194519,
-                            "inter_y_out": 0.8580080270767212,
-                            "value": 0.0
-                        },
-                        {
-                            "frame": 107,
-                            "inter_x_in": -39.57215118408203,
-                            "inter_x_out": 0.0,
-                            "inter_y_in": -0.08075370639562607,
-                            "inter_y_out": 0.0,
-                            "value": 0.0
-                        }
-                    ],
-                    "value": 0.0
-                },
-                { "value": 0.0 },
-                { "value": 0.0 }
-            ],
-            "prim_type": 1,
-            "rotation": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
-            "scale": [{ "value": 1.0 }, { "value": 1.0 }, { "value": 1.0 }],
-            "values": [
-                { "value": 1.0 },
-                { "value": 0.0 },
-                { "value": 0.0 },
                 { "value": 0.0 },
                 { "value": 0.0 },
                 { "value": 0.0 },

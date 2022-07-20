@@ -1,3 +1,4 @@
+use crate::helpers;
 use crate::light;
 use crate::primitive;
 use crate::configuration;
@@ -199,7 +200,7 @@ impl VolumetricSolver{
                 return Solve{hit: false, dist: total_dist, fractal_data: dist.fractal_data, steps: i, pos: mapped_pos, material: dist.material, path_light: volumetric_color }
             }
             dist = new_dist;
-            mapped_pos = [mapped_pos[0] + dir[0] * dist.distance, mapped_pos[1] + dir[1] * dist.distance, mapped_pos[2] + dir[2] * dist.distance];
+            mapped_pos = [mapped_pos[0] + dir[0] * helpers::min_f64(dist.distance, 0.05), mapped_pos[1] + dir[1] * helpers::min_f64(dist.distance, 0.05), mapped_pos[2] + dir[2] * helpers::min_f64(dist.distance, 0.05)];
 
             for l in &self.lights{
                 let info = l.illuminate(mapped_pos);

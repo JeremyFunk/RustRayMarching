@@ -163,12 +163,12 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A:
                     // let ray = self.camera.generate_ray(x as f64, y as f64);
                     let i = self.solver.solve(ray);
                     
-                    let mut volumetric = [i.path_light[0] / f64::from(i.steps) * 0.05, i.path_light[1] / f64::from(i.steps) * 0.05, i.path_light[2] / f64::from(i.steps) * 0.05];
+                    let mut volumetric = [(i.path_light[0] / f64::from(i.steps) * 0.05) * sample_inv, (i.path_light[1] / f64::from(i.steps) * 0.05) * sample_inv, (i.path_light[2] / f64::from(i.steps) * 0.05) * sample_inv];
                     
 
                     if !i.hit {
                         //let col = self.shader.miss_color(x, y, i);
-                        self.film.write_pixel(x, y, [volumetric[0] * sample_inv, volumetric[1] * sample_inv, volumetric[2] * sample_inv]);
+                        self.film.write_pixel(x, y, volumetric);
                     }else{
                         let surface = self.shader.surface_props(x, y, &i);
                         for l in &self.lights{
@@ -192,9 +192,9 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A:
                                 let r =  sample_inv * helpers::max_f64(helpers::dot_product(helpers::reflect(light_dir_inv, i.normal), light_info.direction), 0.0).powf(i.material.n_specular);
                                 
                                 let specular = [light_info.light_intensity[0] * r * i.material.specular, light_info.light_intensity[1] * r * i.material.specular, light_info.light_intensity[2] * r * i.material.specular];
-                                self.film.write_pixel(x, y, [diffuse[0] + specular[0], diffuse[1] + specular[1], diffuse[2] + specular[2]]);
+                                self.film.write_pixel(x, y, [diffuse[0] + specular[0] + volumetric[0], diffuse[1] + specular[1] + volumetric[1], diffuse[2] + specular[2] + volumetric[2]]);
                             }else{
-                                self.film.write_pixel(x, y, [get_f64!(self.ambient[0]) * surface.color[0] * sample_inv, get_f64!(self.ambient[1]) * surface.color[1] * sample_inv, get_f64!(self.ambient[2]) * surface.color[2] * sample_inv]);
+                                self.film.write_pixel(x, y, [get_f64!(self.ambient[0]) * surface.color[0] * sample_inv + volumetric[0], get_f64!(self.ambient[1]) * surface.color[1] * sample_inv + volumetric[1], get_f64!(self.ambient[2]) * surface.color[2] * sample_inv + volumetric[2]]);
                             }
                         }
                     }

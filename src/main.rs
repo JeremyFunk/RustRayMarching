@@ -370,7 +370,7 @@ fn render_scene() {
 }
 
 fn render_frames(frames: Vec<u32>, file_name: &str) {
-    let scene = scene::load_scene("test2.rma.json");
+    let scene = scene::load_scene("test3.rma.json");
     let mut primitives = Vec::<Box<dyn primitive::Primitive>>::new();
 
     let mut group_modifier_indices: Vec<i32> = Vec::new();
@@ -450,15 +450,16 @@ fn render_frames(frames: Vec<u32>, file_name: &str) {
     let mut lights = Vec::<Box<dyn light::Light>>::new();
     let mut lights_solver = Vec::<Box<dyn light::Light>>::new();
     lights.push(Box::new(light::DirectionalLight::new(
-        f64v!(vecmath::vec3_normalized([-0.5, 0.3, 1.0])),
+        f64v!(vecmath::vec3_normalized([-0.5, 0.3, 4.0])),
         f64v!([1.0, 0.2, 0.2]),
         f64!(2.5),
     )));
     lights_solver.push(Box::new(light::DirectionalLight::new(
-        f64v!(vecmath::vec3_normalized([-0.5, 0.3, 1.0])),
+        f64v!(vecmath::vec3_normalized([-0.5, 0.3, -4.0])),
         f64v!([1.0, 0.2, 0.2]),
         f64!(2.5),
     )));
+
 
     let noise = postprocessor::NoisePostProcessor::new(f64!(0.02), f64!(0.01));
     let film = film::BasicFilm::new(vec![], vec![Box::new(noise)]);
