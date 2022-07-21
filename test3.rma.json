@@ -116,7 +116,27 @@
         {
             "modifiers": [],
             "name": "Cube",
-            "position": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
+            "position": [{ "value": 0.0 }, { "value": 1.0 }, { "value": 0.0 }],
+            "prim_type": 1,
+            "rotation": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
+            "scale": [{ "value": 1.0 }, { "value": 1.0 }, { "value": 1.0 }],
+            "values": [
+                { "value": 1.0 },
+                { "value": 1.0 },
+                { "value": 1.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 },
+                { "value": 0.0 }
+            ]
+        },
+        {
+            "modifiers": [],
+            "name": "Cube",
+            "position": [{ "value": 0.0 }, { "value": -2.0 }, { "value": 0.0 }],
             "prim_type": 3,
             "rotation": [{ "value": 0.0 }, { "value": 0.0 }, { "value": 0.0 }],
             "scale": [{ "value": 1.0 }, { "value": 1.0 }, { "value": 1.0 }],

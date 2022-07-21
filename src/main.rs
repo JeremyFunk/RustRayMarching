@@ -450,14 +450,14 @@ fn render_frames(frames: Vec<u32>, file_name: &str) {
     let mut lights = Vec::<Box<dyn light::Light>>::new();
     let mut lights_solver = Vec::<Box<dyn light::Light>>::new();
     lights.push(Box::new(light::DirectionalLight::new(
-        f64v!(vecmath::vec3_normalized([-0.5, 0.3, 4.0])),
-        f64v!([1.0, 0.2, 0.2]),
-        f64!(2.5),
+        f64v!(vecmath::vec3_normalized([0.2, -1.0, 0.0])),
+        f64v!([1.0, 1.0, 1.0]),
+        f64!(1.5),
     )));
     lights_solver.push(Box::new(light::DirectionalLight::new(
-        f64v!(vecmath::vec3_normalized([-0.5, 0.3, -4.0])),
-        f64v!([1.0, 0.2, 0.2]),
-        f64!(2.5),
+        f64v!(vecmath::vec3_normalized([0.2, -1.0, 0.0])),
+        f64v!([1.0, 1.0, 1.0]),
+        f64!(1.5),
     )));
 
 
@@ -483,7 +483,7 @@ fn render_frames(frames: Vec<u32>, file_name: &str) {
         shader,
         sampler,
         lights,
-        f64v!([0.02, 0.01, 0.01]),
+        f64v!([0.001, 0.001, 0.001]),
     );
 
     // let mut renderer = renderers::SolverRenderer::new(camera, film, solver, shader, sampler);

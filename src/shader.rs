@@ -150,7 +150,7 @@ impl PhongShader{
 }
 impl Shader for PhongShader{
     fn surface_props(&self, x: u32, y: u32, i: &solver::IntersectionInfo) -> solver::SufraceProperties{
-        return solver::SufraceProperties{color: [i.normal[0] * 0.5 + 0.5, i.normal[1] * 0.5 + 0.5, i.normal[2] * 0.5 + 0.5]};
+        return solver::SufraceProperties{color: [1.0, 1.0, 1.0]};
     }
     fn miss_color(&self, x: u32, y: u32, i: solver::IntersectionInfo) -> [f64;3]{
         return self.background_shader.shade(x, y);

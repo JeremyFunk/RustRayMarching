@@ -18,7 +18,7 @@ pub const still_frame: u32 = 2;
 pub const end_frame: u32 = ups as u32 * 4;
 pub const start_frame: u32 = 0;
 pub const threads: u32 = 23;
-pub const samples: u32 = 4;
+pub const samples: u32 = 1;
 
 pub const render_scene: bool = true;
 pub const video: bool = false;
