@@ -163,9 +163,8 @@ impl<C: cameras::Camera, F: film::Film, S: solver::Solver, H: shader::Shader, A:
                     // let ray = self.camera.generate_ray(x as f64, y as f64);
                     let i = self.solver.solve(ray);
                     
-                    let mut volumetric = [(i.path_light[0] / f64::from(i.steps) * 0.07) * sample_inv, (i.path_light[1] / f64::from(i.steps) * 0.07) * sample_inv, (i.path_light[2] / f64::from(i.steps) * 0.07) * sample_inv];
+                    let mut volumetric = [(i.path_light[0] / f64::from(i.steps) * 0.55) * sample_inv, (i.path_light[1] / f64::from(i.steps) * 0.55) * sample_inv, (i.path_light[2] / f64::from(i.steps) * 0.55) * sample_inv];
                     
-
                     if !i.hit {
                         //let col = self.shader.miss_color(x, y, i);
                         self.film.write_pixel(x, y, volumetric);
