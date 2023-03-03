@@ -39,15 +39,11 @@ I --> J[Authentication] --> K[Postman relevant endpoints] --> L[Implement Integr
 
 The code implementation for a new integration is fairly straightforward. All existing integrations are located in the `📄 src`directory. To create a new integration, simply copy the `📄 src` integration directory and replace all template names with the name of your integration.
 
-<br/>
-
 ### The index file
 
 <br/>
 
-<br/>
-
-
+This is the index file. It contains high level data about an integration.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 src/renderers.rs
 ```renderscript
