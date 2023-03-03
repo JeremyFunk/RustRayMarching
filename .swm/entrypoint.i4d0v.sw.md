@@ -17,18 +17,13 @@ This is the entrypoint of the program. It can either render a scene, which loads
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 src/main.rs
 ```renderscript
-160    
 161    fn main() {
-162        //println!("{:?}", helpers::mat_transformation([0.0, 0.0, 0.0], [90.0, 0.0, 0.0], [2.0, 3.0, 4.0]));
-163        //return;
-164    
-165        if configuration::render_scene {
-166            render_scene();
-167        } else {
-168            render_code();
-169        }
-170    }
-171    
+162        if configuration::render_scene {
+163            render_scene();
+164        } else {
+165            render_code();
+166        }
+167    }
 ```
 
 <br/>
