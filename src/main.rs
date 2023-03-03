@@ -159,9 +159,6 @@ use scene::SceneObject;
 use std::time::{Duration, Instant};
 
 fn main() {
-    //println!("{:?}", helpers::mat_transformation([0.0, 0.0, 0.0], [90.0, 0.0, 0.0], [2.0, 3.0, 4.0]));
-    //return;
-
     if configuration::render_scene {
         render_scene();
     } else {
