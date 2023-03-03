@@ -159,6 +159,7 @@ use scene::SceneObject;
 use std::time::{Duration, Instant};
 
 fn main() {
+    // Test
     if configuration::render_scene {
         render_scene();
     } else {
