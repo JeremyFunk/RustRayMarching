@@ -13,18 +13,7 @@ The entrypoint of the application is`📄 src/main.rs`. It manages scene loading
 
 <br/>
 
-<br/>
-
-
-<!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
-### 📄 src/main.rs
-```renderscript
-161    fn main() {
-```
-
-<br/>
-
-
+This is the entrypoint of the program. It can either render a scene, which loads a file, or render fully via code.
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 src/main.rs
 ```renderscript
@@ -41,6 +30,10 @@ The entrypoint of the application is`📄 src/main.rs`. It manages scene loading
 170    }
 171    
 ```
+
+<br/>
+
+<br/>
 
 <br/>
 
